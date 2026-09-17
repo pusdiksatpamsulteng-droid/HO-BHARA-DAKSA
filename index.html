@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Dashboard Perawat - e-Care Handover</title>
+    <style>
+        :root {
+            --primary: #0f766e;
+            --primary-dark: #115e59;
+            --primary-light: #ccfbf1;
+            --accent: #0d9488;
+            --bg-main: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        /* --- TOP NAVBAR --- */
+        .top-navbar {
+            background: linear-gradient(135deg, #134e4a 0%, #042f2e 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .app-brand {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-menu-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .menu-item {
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            color: #99f6e4;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .menu-item:hover { background-color: rgba(255,255,255,0.15); color: #ffffff; }
+        .menu-item.active { background-color: var(--accent); color: white; font-weight: 600; box-shadow: 0 2px 6px rgba(13, 148, 136, 0.4); }
+
+        .btn-handover-menu {
+            background: #0d9488;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-handover-menu:hover { background: #0f766e; }
+
+        .btn-add-doctor-menu {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ccfbf1;
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+            padding: 6px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-add-doctor-menu:hover { background: rgba(255, 255, 255, 0.2); color: white; }
+
+        /* AREA KONTEN UTAMA */
+        .content-area {
+            flex: 1;
+            display: flex;
+            height: calc(100vh - 50px);
+            overflow: hidden;
+        }
+
+        /* SUB-SIDEBAR (Daftar Pasien) */
+        .sub-sidebar {
+            width: 330px;
+            background-color: #ffffff;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .sub-header {
+            padding: 14px 16px;
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sub-header h3 { font-size: 14px; color: var(--primary-dark); font-weight: 700; }
+
+        .btn-add {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-add:hover { background-color: var(--primary-dark); }
+
+        /* STATISTIK & PERSENTASE PENJAMIN */
+        .stats-summary-box {
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 16px;
+            font-size: 11px;
+        }
+
+        .stats-total-row {
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 6px;
+        }
+
+        .stats-pills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .stat-pill {
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .stat-pill span {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        /* FILTER DOKTER CONTAINER */
+        .doctor-filter-container {
+            padding: 10px 16px;
+            background-color: #f1f5f9;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .doctor-filter-container label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .doctor-select {
+            width: 100%;
+            padding: 7px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 12px;
+            background: white;
+            color: var(--text-main);
+            outline: none;
+            font-weight: 500;
+        }
+
+        .patient-list-container {
+            overflow-y: auto;
+            flex: 1;
+            padding: 8px;
+        }
+
+        .patient-card {
+            padding: 12px;
+            margin-bottom: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+            background: white;
+        }
+
+        .patient-card:hover { border-color: var(--accent); box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
+        .patient-card.active { background-color: var(--primary-light); border-color: var(--accent); }
+        .patient-card.has-pending-task { border-left: 4px solid var(--danger); background-color: #fffbfb; }
+
+        .p-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .p-name { font-weight: 700; font-size: 13px; color: var(--text-main); }
+        
+        .p-room-badge {
+            background-color: #475569;
+            color: white;
+            font-weight: 600;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .p-room-badge.vvip { background: linear-gradient(135deg, #d97706, #b45309); color: white; }
+
+        .p-details { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+
+        /* BADGE MULTI-DOKTER & PENJAMIN */
+        .doctor-tag {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 2px 5px;
+            font-size: 9px;
+            font-weight: 700;
+            border-radius: 4px;
+            margin-right: 3px;
+            margin-top: 2px;
+        }
+
+        .guarantee-badge {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 2px 6px;
+            font-size: 9px;
+            font-weight: 700;
+            border-radius: 4px;
+            margin-top: 2px;
+            border: 1px solid #fde68a;
+        }
+
+        /* PANEL KANAN (Workspace) */
+        .workspace {
+            flex: 1;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .workspace-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .sub-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        .sub-tab-btn {
+            padding: 6px 10px;
+            font-size: 11px;
+            border: 1px solid var(--border-color);
+            background: white;
+            color: var(--text-muted);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .sub-tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .workspace-body { padding: 20px; overflow-y: auto; flex: 1; background-color: #f8fafc; }
+
+        /* FORM & ELEMEN UI */
+        .form-group { margin-bottom: 12px; }
+        .form-row { display: flex; gap: 12px; }
+        .form-row .form-group { flex: 1; }
+        
+        label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; color: #475569; }
+        
+        input, textarea, select { 
+            width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 12px; color: var(--text-main); background: white; 
+        }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
+
+        .checkbox-group-container {
+            border: 1px solid var(--border-color);
+            padding: 8px 10px;
+            border-radius: 6px;
+            background: white;
+            max-height: 110px;
+            overflow-y: auto;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            margin-bottom: 4px;
+            cursor: pointer;
+        }
+        .checkbox-item input { width: 14px; height: 14px; accent-color: var(--primary); }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 16px; }
+        .btn-save { background-color: var(--primary); color: white; border: none; padding: 10px; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; flex: 2; transition: background 0.2s; }
+        .btn-save:hover { background-color: var(--primary-dark); }
+        
+        .btn-discharge { background-color: var(--danger); color: white; border: none; padding: 10px; font-size: 12px; font-weight: 600; border-radius: 6px; cursor: pointer; flex: 1; transition: opacity 0.2s; }
+        .btn-discharge:hover { opacity: 0.9; }
+
+        /* TOMBOL TAMBAH DPJP KECIL */
+        .btn-add-dpjp-inline {
+            background: #f0fdf4;
+            color: #047857;
+            border: 1px dashed #10b981;
+            padding: 2px 6px;
+            font-size: 9px;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 4px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .btn-add-dpjp-inline:hover { background: #d1fae5; }
+
+        /* ARSIP & TASK STYLING */
+        .archive-card { background: white; border: 1px solid var(--border-color); border-left: 4px solid var(--accent); padding: 14px; margin-bottom: 10px; border-radius: 6px; }
+        .archive-title { font-weight: 700; color: var(--primary-dark); font-size: 13px; margin-bottom: 4px; }
+        .archive-info { font-size: 11px; color: var(--text-muted); margin-bottom: 3px; line-height: 1.4; }
+
+        .task-container-box { background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 16px; }
+        .task-item { display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: 1px solid var(--border-color); padding: 10px 12px; border-radius: 6px; margin-bottom: 8px; font-size: 12px; }
+        .task-item.completed { background: #f0fdf4; border-color: #bbf7d0; text-decoration: line-through; color: #94a3b8; }
+        .task-info { display: flex; align-items: center; gap: 10px; flex: 1; }
+        .task-checkbox { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); }
+        
+        /* RIWAYAT & TTV MENCOLOK */
+        .history-card { background: white; border: 1px solid var(--border-color); border-left: 4px solid var(--primary); padding: 14px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .history-header { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin-bottom: 10px; font-weight: 600; align-items: center; flex-wrap: wrap; gap: 5px; }
+        
+        .ttv-badge-container { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+        .ttv-badge { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 4px; }
+        .ttv-badge span { color: var(--primary-dark); font-weight: 800; }
+
+        .soap-text { font-size: 12px; line-height: 1.5; color: var(--text-main); background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #f1f5f9; }
+
+        /* GALLERY / LAB FILES STYLING */
+        .lab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 10px; }
+        .lab-card { background: white; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .lab-card:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-color: var(--accent); }
+        .lab-thumb { width: 100%; height: 110px; object-fit: cover; background: #e2e8f0; }
+        .lab-info { padding: 8px; font-size: 11px; }
+        .lab-title { font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .lab-date { color: var(--text-muted); font-size: 10px; margin-top: 2px; }
+
+        /* MODAL */
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; padding: 15px; }
+        .modal-content { background: white; padding: 22px; border-radius: 10px; width: 100%; max-width: 440px; max-height: 90vh; overflow-y: auto; }
+        .modal-title { font-size: 16px; font-weight: 700; color: var(--primary-dark); margin-bottom: 16px; }
+        .modal-btns { display: flex; gap: 10px; margin-top: 16px; }
+        .btn-cancel { background: #e2e8f0; color: #475569; border: none; padding: 8px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: 600; font-size: 12px; }
+        .btn-submit { background: var(--primary); color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; flex: 1; font-weight: 600; font-size: 12px; }
+
+        /* MODAL LAPORAN SERAH TERIMA & IMAGE PREVIEW */
+        .handover-modal-content { background: white; padding: 24px; border-radius: 10px; width: 100%; max-width: 750px; max-height: 90vh; overflow-y: auto; }
+        .image-modal-content { background: white; padding: 15px; border-radius: 10px; width: 100%; max-width: 600px; text-align: center; }
+        .preview-img { width: 100%; max-height: 70vh; object-fit: contain; border-radius: 6px; margin-bottom: 10px; background: #000; }
+
+        /* TABEL LAPORAN */
+        .handover-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 11px; }
+        .handover-table th, .handover-table td { border: 1px solid var(--border-color); padding: 8px 10px; text-align: left; }
+        .handover-table th { background: #f1f5f9; color: var(--primary-dark); font-weight: 700; }
+
+        /* --- PRINT STYLING --- */
+        @media print {
+            body * { visibility: hidden; }
+            #handoverModal, #handoverModal * { visibility: visible; }
+            #handoverModal { position: absolute; left: 0; top: 0; width: 100%; height: auto; background: white; padding: 0; }
+            .handover-modal-content { max-width: 100%; max-height: none; box-shadow: none; padding: 0; }
+            .modal-btns, button { display: none !important; }
+        }
+
+        /* --- MEDIA QUERY UNTUK MOBILE (< 768px) --- */
+        @media (max-width: 768px) {
+            .top-navbar { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px; }
+            .nav-menu-group { justify-content: space-between; }
+            .content-area { flex-direction: column; height: calc(100vh - 90px); overflow-y: auto; }
+            .sub-sidebar { width: 100%; height: auto; max-height: 320px; border-right: none; border-bottom: 1px solid var(--border-color); }
+            .workspace { height: auto; flex: 1; min-height: 400px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAVBAR -->
+    <div class="top-navbar">
+        <div class="app-brand">🏥 e-Care Handover Tab</div>
+        <div class="nav-menu-group">
+            <button class="btn-handover-menu" onclick="openHandoverModal()">📋 Laporan Serah Terima Jaga</button>
+            <div class="menu-item active" id="menuActive" onclick="switchMenu('active')">🛏️ Inap</div>
+            <div class="menu-item" id="menuArchive" onclick="switchMenu('archive')">📁 Arsip</div>
+            <button class="btn-add-doctor-menu" onclick="openDoctorModal()">+ Dokter</button>
+        </div>
+    </div>
+
+    <div class="content-area" id="contentArea"></div>
+
+    <!-- MODAL LAPORAN SERAH TERIMA JAGA -->
+    <div class="modal" id="handoverModal">
+        <div class="handover-modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--primary); padding-bottom:10px; margin-bottom:14px;">
+                <div>
+                    <h3 style="color:var(--primary-dark); font-size:15px;">📋 Laporan Serah Terima Jaga Perawat</h3>
+                    <div style="font-size:11px; color:var(--text-muted); margin-top:2px;" id="handoverTimestamp">Waktu Cetak: -</div>
+                </div>
+                <button onclick="window.print()" style="background:#0f766e; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; font-weight:600;">🖨️ Cetak / PDF</button>
+            </div>
+            
+            <div id="handoverBodyContent" style="margin-bottom: 16px;"></div>
+
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <div style="flex:1; border:1px solid var(--border-color); padding:10px; border-radius:6px; font-size:11px;">
+                    <strong>Perawat Penyerah Shift:</strong><br><br><br>
+                    ( ............................................ )
+                </div>
+                <div style="flex:1; border:1px solid var(--border-color); padding:10px; border-radius:6px; font-size:11px;">
+                    <strong>Perawat Penerima Shift:</strong><br><br><br>
+                    ( ............................................ )
+                </div>
+            </div>
+
+            <div class="modal-btns" style="margin-top: 16px;">
+                <button type="button" class="btn-cancel" onclick="closeHandoverModal()" style="width: 100%;">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL REGISTRASI PASIEN -->
+    <div class="modal" id="patientModal">
+        <div class="modal-content">
+            <div class="modal-title">Registrasi Pasien Baru</div>
+            <form onsubmit="saveNewPatient(event)">
+                <div class="form-group"><label>Nama Pasien</label><input type="text" id="pName" placeholder="Cth: Tn. Budi" required></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Umur (Tahun)</label><input type="number" id="pAge" placeholder="Cth: 32" required></div>
+                    <div class="form-group"><label>Nomor RM</label><input type="text" id="pRM" placeholder="Cth: 00-12-34" required></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Pilih Ruangan / Bed</label>
+                        <select id="pRoom" required>
+                            <option value="">Pilih Ruangan...</option>
+                            <option value="VVIP 1">VVIP 1</option>
+                            <option value="VVIP 2">VVIP 2</option>
+                            <option value="VVIP 3">VVIP 3</option>
+                            <option value="VVIP 4">VVIP 4</option>
+                            <option value="Bhara Daksa 5A">Bhara Daksa 5A</option>
+                            <option value="Bhara Daksa 5B">Bhara Daksa 5B</option>
+                            <option value="Bhara Daksa 6A">Bhara Daksa 6A</option>
+                            <option value="Bhara Daksa 6B">Bhara Daksa 6B</option>
+                            <option value="Bhara Daksa 7A">Bhara Daksa 7A</option>
+                            <option value="Bhara Daksa 7B">Bhara Daksa 7B</option>
+                            <option value="Bhara Daksa 8A">Bhara Daksa 8A</option>
+                            <option value="Bhara Daksa 8B">Bhara Daksa 8B</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Penjamin Pasien</label>
+                        <select id="pGuarantee" required>
+                            <option value="">Pilih Penjamin...</option>
+                            <option value="BPJS">BPJS</option>
+                            <option value="Umum">Umum</option>
+                            <option value="Asuransi">Asuransi</option>
+                            <option value="Anggota">Anggota</option>
+                            <option value="PNS">PNS</option>
+                            <option value="Keluarga">Keluarga</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>DPJP / Dokter yang Merawat (Bisa Pilih Lebih dari 1)</label>
+                    <div class="checkbox-group-container" id="modalDoctorCheckboxes"></div>
+                </div>
+                <div class="form-group"><label>Diagnosa Masuk</label><input type="text" id="pDiag" placeholder="Cth: Hipertensi" required></div>
+                <div class="modal-btns">
+                    <button type="button" class="btn-cancel" onclick="closePatientModal()">Batal</button>
+                    <button type="submit" class="btn-submit">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL TAMBAH DPJP KONSULEN KHUSUS -->
+    <div class="modal" id="addDpjpModal">
+        <div class="modal-content">
+            <div class="modal-title">Tambah Dokter Konsulen / DPJP</div>
+            <form onsubmit="saveAddedDpjp(event)">
+                <div class="form-group">
+                    <label>Pilih Dokter Spesialis Tambahan</label>
+                    <select id="selectExtraDpjp" class="doctor-select" required>
+                        <option value="">-- Pilih Dokter --</option>
+                    </select>
+                </div>
+                <div class="modal-btns">
+                    <button type="button" class="btn-cancel" onclick="closeAddDpjpModal()">Batal</button>
+                    <button type="submit" class="btn-submit">Tambahkan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL TAMBAH DOKTER -->
+    <div class="modal" id="doctorModal">
+        <div class="modal-content">
+            <div class="modal-title">Tambah Dokter Spesialis Baru</div>
+            <form onsubmit="saveNewDoctor(event)">
+                <div class="form-group">
+                    <label>Nama Lengkap & Gelar Dokter</label>
+                    <input type="text" id="docName" placeholder="Cth: dr. Rahmat, Sp.OT" required>
+                </div>
+                <div class="form-group">
+                    <label>Spesialisasi / Keterangan</label>
+                    <input type="text" id="docSpec" placeholder="Cth: Dokter Spesialis Orthopedi" required>
+                </div>
+                <div class="modal-btns">
+                    <button type="button" class="btn-cancel" onclick="closeDoctorModal()">Batal</button>
+                    <button type="submit" class="btn-submit">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PREVIEW GAMBAR LAB -->
+    <div class="modal" id="imagePreviewModal">
+        <div class="image-modal-content">
+            <div class="modal-title" id="previewTitle" style="font-size: 14px; margin-bottom: 10px;">Preview Hasil Lab</div>
+            <img id="previewImgElement" class="preview-img" src="" alt="Hasil Lab">
+            <div id="previewDesc" style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;"></div>
+            <button type="button" class="btn-cancel" onclick="closeImagePreview()" style="width: 100%;">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        // --- LOCAL STORAGE INITIALIZATION ---
+        let availableDoctors = JSON.parse(localStorage.getItem('ecare_doctors')) || [
+            "dr. Budi, Sp.PD", 
+            "dr. Ade, Sp.B", 
+            "dr. Hans, Sp.A", 
+            "dr. Siska, Sp.JP"
+        ];
+
+        let patientsData = JSON.parse(localStorage.getItem('ecare_patients')) || [
+            { 
+                id: 1, name: 'Tn. Budi', age: '45', rm: '00-11-01', room: 'VVIP 1', 
+                guarantee: 'BPJS',
+                dpjp: ['dr. Budi, Sp.PD', 'dr. Siska, Sp.JP'], 
+                diag: 'Hipertensi + PJK', status: 'Inap', 
+                entryTime: '17/09/2026 07:30',
+                notes: [
+                    { time: '17/09/2026 08:00', bp: '130/80', hr: '82', temp: '36.6', spoe: '98', s: 'Pusing berkurang', o: 'Kesadaran compos mentis', a: 'Hipertensi terkontrol', p: 'Lanjutkan obat oral' }
+                ], 
+                tasks: [
+                    { id: 101, text: 'Inj. Cefotaxime 1g / 12 Jam', completed: false },
+                    { id: 102, text: 'Cek Gula Darah Sewaktu (GDS) jam 06.00', completed: true }
+                ],
+                labs: [
+                    { id: 201, title: 'Hasil Darah Lengkap', date: '17/09/2026', url: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=600&q=80', desc: 'Leukosit 10.500, Hb 13.2' },
+                    { id: 202, title: 'Foto Thorax Rontgen', date: '17/09/2026', url: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=600&q=80', desc: 'Cor dalam batas normal' }
+                ],
+                discharge: null 
+            }
+        ];
+
+        let currentMenu = 'active';
+        let currentPatientId = patientsData.length > 0 ? patientsData[0].id : null;
+        let activeTab = 'history'; 
+        let selectedDoctorFilter = 'ALL';
+
+        function saveData() {
+            localStorage.setItem('ecare_doctors', JSON.stringify(availableDoctors));
+            localStorage.setItem('ecare_patients', JSON.stringify(patientsData));
+        }
+
+        function switchMenu(menu) {
+            currentMenu = menu;
+            document.getElementById('menuActive').className = `menu-item ${menu === 'active' ? 'active' : ''}`;
+            document.getElementById('menuArchive').className = `menu-item ${menu === 'archive' ? 'active' : ''}`;
+            renderLayout();
+        }
+
+        function renderLayout() {
+            const area = document.getElementById('contentArea');
+
+            if (currentMenu === 'active') {
+                const activePatientsAll = patientsData.filter(p => p.status === 'Inap');
+                const totalInap = activePatientsAll.length;
+
+                const guaranteeCounts = { BPJS: 0, Umum: 0, Asuransi: 0, Anggota: 0, PNS: 0, Keluarga: 0 };
+                activePatientsAll.forEach(p => {
+                    if (p.guarantee && guaranteeCounts.hasOwnProperty(p.guarantee)) {
+                        guaranteeCounts[p.guarantee]++;
+                    }
+                });
+
+                let pillsHtml = '';
+                for (let [key, val] of Object.entries(guaranteeCounts)) {
+                    let pct = totalInap > 0 ? ((val / totalInap) * 100).toFixed(1) : '0.0';
+                    pillsHtml += `<div class="stat-pill">${key}: <span>${val} (${pct}%)</span></div>`;
+                }
+
+                let doctorOptionsHTML = `<option value="ALL">Semua Dokter (Total: ${totalInap})</option>`;
+                availableDoctors.forEach(doc => {
+                    const count = activePatientsAll.filter(p => p.dpjp.includes(doc)).length;
+                    doctorOptionsHTML += `<option value="${doc}">${doc} (${count})</option>`;
+                });
+
+                area.innerHTML = `
+                    <div class="sub-sidebar">
+                        <div class="sub-header">
+                            <h3>Pasien Inap</h3>
+                            <button class="btn-add" onclick="openPatientModal()">+ Pasien</button>
+                        </div>
+                        <div class="stats-summary-box">
+                            <div class="stats-total-row">
+                                <span>📊 Total Pasien Inap:</span>
+                                <span style="font-size:12px; background:var(--primary-light); color:var(--primary-dark); padding:2px 8px; border-radius:4px;">${totalInap} Pasien (100%)</span>
+                            </div>
+                            <div class="stats-pills-grid">
+                                ${pillsHtml}
+                            </div>
+                        </div>
+                        <div class="doctor-filter-container">
+                            <label>Filter Dokter</label>
+                            <select class="doctor-select" id="doctorFilterSelect" onchange="changeDoctorFilter(this.value)">
+                                ${doctorOptionsHTML}
+                            </select>
+                        </div>
+                        <div class="patient-list-container" id="activeList"></div>
+                    </div>
+                    <div class="workspace" id="activeWorkspace"></div>
+                `;
+
+                document.getElementById('doctorFilterSelect').value = selectedDoctorFilter;
+
+                let activePatientsFiltered = activePatientsAll;
+                if (selectedDoctorFilter !== 'ALL') {
+                    activePatientsFiltered = activePatientsAll.filter(p => p.dpjp.includes(selectedDoctorFilter));
+                }
+
+                renderActiveList(activePatientsFiltered);
+                
+                if (activePatientsFiltered.length > 0) {
+                    if (!activePatientsFiltered.some(p => p.id === currentPatientId)) {
+                        currentPatientId = activePatientsFiltered[0].id;
+                    }
+                    renderWorkspace();
+                } else {
+                    document.getElementById('activeWorkspace').innerHTML = '<div style="padding:30px; color:#64748b; text-align:center; font-size:13px;">Tidak ada pasien untuk filter ini.</div>';
+                }
+
+            } else {
+                const dischargedPatients = patientsData.filter(p => p.status === 'Pulang');
+                area.innerHTML = `
+                    <div class="workspace" style="width: 100%;">
+                        <div class="workspace-header">📁 Arsip Pasien Pulang (${dischargedPatients.length})</div>
+                        <div class="workspace-body" id="archiveBody"></div>
+                    </div>
+                `;
+                renderArchiveList(dischargedPatients);
+            }
+        }
+
+        function changeDoctorFilter(doc) {
+            selectedDoctorFilter = doc;
+            renderLayout();
+        }
+
+        function renderActiveList(list) {
+            const container = document.getElementById('activeList');
+            if(!container) return;
+            container.innerHTML = '';
+
+            list.forEach(p => {
+                const pendingTasks = p.tasks ? p.tasks.filter(t => !t.completed).length : 0;
+                let cardClass = `patient-card ${p.id === currentPatientId ? 'active' : ''}`;
+                if (pendingTasks > 0) cardClass += ' has-pending-task';
+
+                const item = document.createElement('div');
+                item.className = cardClass;
+                
+                const isVVIP = p.room.includes('VVIP');
+                const badgeClass = isVVIP ? 'p-room-badge vvip' : 'p-room-badge';
+                const taskBadge = pendingTasks > 0 ? `<span style="background:#ef4444; color:white; font-size:9px; padding:2px 5px; border-radius:8px; margin-left:3px; font-weight:700;">⚠️ ${pendingTasks}</span>` : '';
+                const guaranteeBadge = p.guarantee ? `<span class="guarantee-badge">🛡️ ${p.guarantee}</span>` : '';
+
+                let doctorTagsHTML = '';
+                p.dpjp.forEach(doc => {
+                    doctorTagsHTML += `<span class="doctor-tag">${doc}</span>`;
+                });
+
+                item.innerHTML = `
+                    <div class="p-header-row">
+                        <div class="p-name">${p.name} (${p.age} Th) ${taskBadge}</div>
+                        <div>${guaranteeBadge} <span class="${badgeClass}">📍 ${p.room}</span></div>
+                    </div>
+                    <div class="p-details">
+                        RM: ${p.rm} | Diag: ${p.diag}<br>
+                        ⏱️ Masuk: ${p.entryTime || '-'}<br>
+                        <div style="margin-top:2px;">${doctorTagsHTML}</div>
+                    </div>
+                `;
+                item.onclick = () => { 
+                    currentPatientId = p.id; 
+                    activeTab = 'history'; 
+                    renderWorkspace(); 
+                    renderActiveList(list); 
+                };
+                container.appendChild(item);
+            });
+        }
+
+        function renderWorkspace() {
+            const ws = document.getElementById('activeWorkspace');
+            const patient = patientsData.find(p => p.id === currentPatientId);
+            if (!patient) return;
+
+            let doctorTagsHTML = '';
+            patient.dpjp.forEach(doc => {
+                doctorTagsHTML += `<span class="doctor-tag" style="background:#e0f2fe; font-size:10px;">${doc}</span>`;
+            });
+            
+            // Tambahkan Tombol Tambah DPJP Spesifik di sebelah badge dokter
+            doctorTagsHTML += `<button class="btn-add-dpjp-inline" onclick="openAddDpjpModal()">+ Tambahkan DPJP</button>`;
+
+            const labCount = patient.labs ? patient.labs.length : 0;
+            const guaranteeText = patient.guarantee ? ` | Penjamin: <strong>${patient.guarantee}</strong>` : '';
+
+            ws.innerHTML = `
+                <div class="workspace-header">
+                    <div>
+                        <span style="font-size:14px;">${patient.name} <span style="font-weight:normal; color:#64748b; font-size:12px;">(RM: ${patient.rm})</span></span>
+                        <div style="font-size:11px; color:var(--text-muted); font-weight:normal; margin-top:1px;">⏱️ Masuk: ${patient.entryTime || '-'} | 📍 Ruangan: ${patient.room}${guaranteeText}</div>
+                        <div style="margin-top:3px; display:flex; align-items:center; flex-wrap:wrap; gap:2px;">${doctorTagsHTML}</div>
+                    </div>
+                    <div class="sub-tabs">
+                        <button class="sub-tab-btn ${activeTab === 'history' ? 'active' : ''}" onclick="switchSubTab('history')">Riwayat & TTV (${patient.notes.length})</button>
+                        <button class="sub-tab-btn ${activeTab === 'tasks' ? 'active' : ''}" onclick="switchSubTab('tasks')">Tindakan (${patient.tasks.filter(t=>!t.completed).length})</button>
+                        <button class="sub-tab-btn ${activeTab === 'labs' ? 'active' : ''}" onclick="switchSubTab('labs')">🖼️ Lab & Foto (${labCount})</button>
+                        <button class="sub-tab-btn ${activeTab === 'input' ? 'active' : ''}" onclick="switchSubTab('input')">+ Catatan</button>
+                    </div>
+                </div>
+                <div class="workspace-body" id="wsBody"></div>
+            `;
+            renderWsBody();
+        }
+
+        function switchSubTab(tab) { activeTab = tab; renderWorkspace(); }
+
+        function renderWsBody() {
+            const body = document.getElementById('wsBody');
+            const patient = patientsData.find(p => p.id === currentPatientId);
+            if (!patient) return;
+
+            if (activeTab === 'history') {
+                let historyHtml = '';
+                patient.notes.slice().reverse().forEach(note => {
+                    historyHtml += `
+                        <div class="history-card">
+                            <div class="history-header">
+                                <span>📅 Waktu Catat: <strong>${note.time}</strong></span>
+                            </div>
+                            <div class="ttv-badge-container">
+                                <div class="ttv-badge">❤️ TD: <span>${note.bp}</span> mmHg</div>
+                                <div class="ttv-badge">💓 Nadi: <span>${note.hr}</span> bpm</div>
+                                <div class="ttv-badge">🌡️ Suhu: <span>${note.temp}</span> °C</div>
+                                <div class="ttv-badge">🫁 SpO2: <span>${note.spoe}</span> %</div>
+                            </div>
+                            <div class="soap-text">
+                                <strong>S:</strong> ${note.s}<br>
+                                <strong>O:</strong> ${note.o}<br>
+                                <strong>A:</strong> ${note.a}<br>
+                                <strong>P:</strong> ${note.p}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                body.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h4 style="color:var(--primary-dark); font-size:13px;">Riwayat Catatan & Tanda Vital (TTV) Pasien</h4>
+                        <button class="btn-add" onclick="switchSubTab('input')">+ Tambah Catatan Baru</button>
+                    </div>
+                    <div>${historyHtml || '<p style="color:var(--text-muted); font-size:12px;">Belum ada riwayat catatan.</p>'}</div>
+                `;
+            } else if (activeTab === 'labs') {
+                let labsHtml = '';
+                if (patient.labs && patient.labs.length > 0) {
+                    patient.labs.forEach(lab => {
+                        labsHtml += `
+                            <div class="lab-card" onclick="openImagePreview('${lab.url}', '${lab.title}', '${lab.date} - ${lab.desc}')">
+                                <img src="${lab.url}" class="lab-thumb" alt="${lab.title}">
+                                <div class="lab-info">
+                                    <div class="lab-title">${lab.title}</div>
+                                    <div class="lab-date">📅 ${lab.date}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                body.innerHTML = `
+                    <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 16px;">
+                        <h4 style="color:var(--primary-dark); margin-bottom:12px; font-size:13px;">Hasil Lab, Rontgen, atau Penunjang Medis</h4>
+                        <div style="display:flex; gap:8px; margin-bottom:16px; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid var(--border-color); flex-wrap:wrap;">
+                            <div style="flex:1; min-width:180px;"><label>Judul / Jenis Pemeriksaan</label><input type="text" id="labTitleInput" placeholder="Cth: Hasil EKG / Lab Darah"></div>
+                            <div style="flex:1; min-width:180px;"><label>Keterangan Singkat</label><input type="text" id="labDescInput" placeholder="Cth: Sinus Rhythm"></div>
+                            <div style="width:100%;"><label>Simulasikan Pilih File Gambar</label><input type="file" id="labFileInput" accept="image/*" style="background:white; padding:5px;"></div>
+                            <button class="btn-add" style="margin-top:4px;" onclick="uploadLabImage(${patient.id})">+ Upload Gambar Lab</button>
+                        </div>
+                        <div class="lab-grid">${labsHtml || '<p style="color:var(--text-muted); font-size:12px; grid-column:1/-1; text-align:center; padding:20px;">Belum ada lampiran gambar hasil lab.</p>'}</div>
+                    </div>
+                `;
+            } else if (activeTab === 'input') {
+                body.innerHTML = `
+                    <form onsubmit="saveNote(event)">
+                        <h4 style="margin-bottom: 12px; color: var(--primary-dark); font-size: 13px;">Form Input Catatan Shift & TTV Baru</h4>
+                        <div class="form-row">
+                            <div class="form-group"><label>Tekanan Darah (mmHg)</label><input type="text" id="nBP" placeholder="120/80" required></div>
+                            <div class="form-group"><label>Nadi (bpm)</label><input type="number" id="nHR" placeholder="80" required></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Suhu Tubuh (°C)</label><input type="number" step="0.1" id="nTemp" placeholder="36.5" required></div>
+                            <div class="form-group"><label>SpO2 (%)</label><input type="number" id="nSpO2" placeholder="98" required></div>
+                        </div>
+                        <div class="form-group"><label>Subyektif (S)</label><textarea id="nS" rows="2" placeholder="Keluhan..." required></textarea></div>
+                        <div class="form-group"><label>Obyektif (O)</label><textarea id="nO" rows="2" placeholder="Observasi..." required></textarea></div>
+                        <div class="form-group"><label>Assessment (A)</label><textarea id="nA" rows="2" placeholder="Analisa..." required></textarea></div>
+                        <div class="form-group"><label>Planning (P) / Instruksi Kolaborasi</label><textarea id="nP" rows="2" placeholder="Instruksi medis gabungan..." required></textarea></div>
+                        <div class="btn-group">
+                            <button type="submit" class="btn-save">Simpan Catatan Shift</button>
+                            <button type="button" class="btn-discharge" onclick="dischargePatient(${patient.id})">Pulangkan</button>
+                        </div>
+                    </form>
+                `;
+            } else if (activeTab === 'tasks') {
+                let tasksHtml = '';
+                patient.tasks.forEach(task => {
+                    tasksHtml += `
+                        <div class="task-item ${task.completed ? 'completed' : ''}">
+                            <div class="task-info">
+                                <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} onclick="toggleTask(${patient.id}, ${task.id})">
+                                <span>${task.text}</span>
+                            </div>
+                            <button onclick="deleteTask(${patient.id}, ${task.id})" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:11px; font-weight:600;">Hapus</button>
+                        </div>
+                    `;
+                });
+
+                body.innerHTML = `
+                    <div class="task-container-box">
+                        <h4 style="color:var(--primary-dark); margin-bottom:10px; font-size:13px;">Daftar Instruksi / Tindakan Medis</h4>
+                        <div style="display:flex; gap:6px; margin-bottom:12px;">
+                            <input type="text" id="newTaskText" placeholder="Tambah tindakan baru..." style="flex:1;">
+                            <button class="btn-add" onclick="addNewTask(${patient.id})">+ Tambah</button>
+                        </div>
+                        <div>${tasksHtml || '<p style="color:var(--text-muted); font-size:12px;">Belum ada instruksi tindakan.</p>'}</div>
+                    </div>
+                `;
+            }
+        }
+
+        function openHandoverModal() {
+            const activePatients = patientsData.filter(p => p.status === 'Inap');
+            const container = document.getElementById('handoverBodyContent');
+            
+            const now = new Date();
+            const dateStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            document.getElementById('handoverTimestamp').innerText = `Waktu Cetak: ${dateStr}`;
+
+            if (activePatients.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:12px;">Tidak ada pasien rawat inap saat ini.</p>';
+            } else {
+                let tableRows = '';
+                activePatients.forEach((p, idx) => {
+                    let lastNote = p.notes && p.notes.length > 0 ? p.notes[p.notes.length - 1] : null;
+                    let ttvText = lastNote ? `TD: ${lastNote.bp}, N: ${lastNote.hr}, S: ${lastNote.temp}°C, SpO2: ${lastNote.spoe}%` : 'Belum ada TTV';
+                    let soapSummary = lastNote ? `S: ${lastNote.s} | O: ${lastNote.o}` : 'Belum ada catatan';
+                    let guaranteeStr = p.guarantee ? ` | 🛡️ ${p.guarantee}` : '';
+
+                    let pendingTasks = p.tasks ? p.tasks.filter(t => !t.completed).map(t => `• ${t.text}`).join('<br>') : 'Tidak ada tindakan pending';
+                    if (!pendingTasks) pendingTasks = 'Semua tindakan selesai';
+
+                    tableRows += `
+                        <tr>
+                            <td>${idx + 1}</td>
+                            <td><strong>${p.name}</strong><br><span style="color:var(--text-muted);">RM: ${p.rm}</span></td>
+                            <td>${p.room}${guaranteeStr}<br><span style="font-size:10px; color:var(--accent); font-weight:700;">${p.diag}</span></td>
+                            <td>${ttvText}<br><em style="font-size:10px; color:#475569;">${soapSummary}</em></td>
+                            <td>${pendingTasks}</td>
+                        </tr>
+                    `;
+                });
+
+                container.innerHTML = `
+                    <div style="font-size:12px; margin-bottom:8px;">Berikut adalah rekapitulasi kondisi klinis dan rencana tindakan aktif untuk seluruh pasien rawat inap:</div>
+                    <table class="handover-table">
+                        <thead>
+                            <tr>
+                                <th style="width:5%;">No</th>
+                                <th style="width:20%;">Nama / RM</th>
+                                <th style="width:18%;">Ruangan / Penjamin</th>
+                                <th style="width:30%;">Kondisi Umum & TTV Terakhir</th>
+                                <th style="width:27%;">Tindakan Pending / Planning</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+                `;
+            }
+
+            document.getElementById('handoverModal').style.display = 'flex';
+        }
+
+        function closeHandoverModal() {
+            document.getElementById('handoverModal').style.display = 'none';
+        }
+
+        function openImagePreview(url, title, desc) {
+            document.getElementById('previewTitle').innerText = title;
+            document.getElementById('previewImgElement').src = url;
+            document.getElementById('previewDesc').innerText = desc;
+            document.getElementById('imagePreviewModal').style.display = 'flex';
+        }
+
+        function closeImagePreview() {
+            document.getElementById('imagePreviewModal').style.display = 'none';
+        }
+
+        function uploadLabImage(patientId) {
+            const titleInput = document.getElementById('labTitleInput');
+            const descInput = document.getElementById('labDescInput');
+            const fileInput = document.getElementById('labFileInput');
+
+            const title = titleInput.value.trim();
+            const desc = descInput.value.trim() || '-';
+
+            if (!title) {
+                alert('Judul pemeriksaan wajib diisi!');
+                return;
+            }
+
+            const patient = patientsData.find(p => p.id === patientId);
+            if (patient) {
+                if (!patient.labs) patient.labs = [];
+                
+                let imageUrl = 'https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=600&q=80';
+                if (fileInput.files && fileInput.files[0]) {
+                    imageUrl = URL.createObjectURL(fileInput.files[0]);
+                }
+
+                const now = new Date();
+                const dateStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+
+                patient.labs.push({
+                    id: Date.now(),
+                    title: title,
+                    date: dateStr,
+                    url: imageUrl,
+                    desc: desc
+                });
+
+                saveData();
+                alert('Gambar hasil lab berhasil diunggah!');
+                renderWorkspace();
+            }
+        }
+
+        function saveNote(e) {
+            e.preventDefault();
+            const patient = patientsData.find(p => p.id === currentPatientId);
+            if (!patient) return;
+
+            const now = new Date();
+            const timeString = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+            const newNote = {
+                time: timeString,
+                bp: document.getElementById('nBP').value,
+                hr: document.getElementById('nHR').value,
+                temp: document.getElementById('nTemp').value,
+                spoe: document.getElementById('nSpO2').value,
+                s: document.getElementById('nS').value,
+                o: document.getElementById('nO').value,
+                a: document.getElementById('nA').value,
+                p: document.getElementById('nP').value
+            };
+
+            patient.notes.push(newNote);
+            saveData();
+            alert('Catatan shift berhasil disimpan!');
+            activeTab = 'history'; 
+            renderWorkspace();
+        }
+
+        function addNewTask(patientId) {
+            const input = document.getElementById('newTaskText');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const patient = patientsData.find(p => p.id === patientId);
+            if (patient) {
+                patient.tasks.push({ id: Date.now(), text: text, completed: false });
+                saveData();
+                input.value = '';
+                renderWorkspace();
+                renderLayout();
+            }
+        }
+
+        function toggleTask(patientId, taskId) {
+            const patient = patientsData.find(p => p.id === patientId);
+            if (patient) {
+                const task = patient.tasks.find(t => t.id === taskId);
+                if (task) {
+                    task.completed = !task.completed;
+                    saveData();
+                    renderWorkspace();
+                    renderLayout();
+                }
+            }
+        }
+
+        function deleteTask(patientId, taskId) {
+            const patient = patientsData.find(p => p.id === patientId);
+            if (patient) {
+                patient.tasks = patient.tasks.filter(t => t.id !== taskId);
+                saveData();
+                renderWorkspace();
+                renderLayout();
+            }
+        }
+
+        function dischargePatient(patientId) {
+            if (confirm('Apakah Anda yakin ingin memulangkan pasien ini?')) {
+                const patient = patientsData.find(p => p.id === patientId);
+                if (patient) {
+                    patient.status = 'Pulang';
+                    patient.discharge = new Date().toLocaleDateString('id-ID');
+                    saveData();
+                    renderLayout();
+                }
+            }
+        }
+
+        function renderArchiveList(list) {
+            const container = document.getElementById('archiveBody');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (list.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:30px; font-size:12px;">Belum ada arsip pasien pulang.</p>';
+                return;
+            }
+
+            list.forEach(p => {
+                let doctorTagsHTML = '';
+                p.dpjp.forEach(doc => { doctorTagsHTML += `<span class="doctor-tag">${doc}</span>`; });
+                let guaranteeStr = p.guarantee ? ` | <strong>Penjamin:</strong> ${p.guarantee}` : '';
+
+                container.innerHTML += `
+                    <div class="archive-card">
+                        <div class="archive-title">${p.name} (${p.age} Th) - RM: ${p.rm}</div>
+                        <div class="archive-info"><strong>Ruangan:</strong> ${p.room}${guaranteeStr} | <strong>Diagnosa:</strong> ${p.diag}</div>
+                        <div class="archive-info"><strong>Jam Masuk:</strong> ${p.entryTime || '-'}</div>
+                        <div class="archive-info"><strong>DPJP:</strong> ${doctorTagsHTML}</div>
+                        <div class="archive-info" style="margin-top:4px; color:var(--success);"><strong>Status:</strong> Telah Dipulangkan</div>
+                    </div>
+                `;
+            });
+        }
+
+        function openPatientModal() { 
+            const container = document.getElementById('modalDoctorCheckboxes');
+            container.innerHTML = '';
+            availableDoctors.forEach(doc => {
+                container.innerHTML += `
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="dpjpCheckbox" value="${doc}"> ${doc}
+                    </label>
+                `;
+            });
+            document.getElementById('patientModal').style.display = 'flex'; 
+        }
+        function closePatientModal() { document.getElementById('patientModal').style.display = 'none'; }
+        
+        function saveNewPatient(e) {
+            e.preventDefault();
+            const checkedDoctors = [];
+            document.querySelectorAll('input[name="dpjpCheckbox"]:checked').forEach(cb => {
+                checkedDoctors.push(cb.value);
+            });
+
+            if (checkedDoctors.length === 0) {
+                alert('Pilih minimal satu dokter!');
+                return;
+            }
+
+            const now = new Date();
+            const entryTimeString = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+            const newId = patientsData.length > 0 ? patientsData[patientsData.length - 1].id + 1 : 1;
+            patientsData.push({
+                id: newId,
+                name: document.getElementById('pName').value,
+                age: document.getElementById('pAge').value,
+                rm: document.getElementById('pRM').value,
+                room: document.getElementById('pRoom').value,
+                guarantee: document.getElementById('pGuarantee').value,
+                dpjp: checkedDoctors,
+                diag: document.getElementById('pDiag').value,
+                status: 'Inap',
+                entryTime: entryTimeString,
+                notes: [], labs: [], tasks: [], discharge: null
+            });
+            saveData();
+            closePatientModal();
+            currentPatientId = newId;
+            activeTab = 'history'; 
+            renderLayout();
+        }
+
+        // FUNGSI MODAL TAMBAH DPJP KONSULEN KHUSUS
+        function openAddDpjpModal() {
+            const patient = patientsData.find(p => p.id === currentPatientId);
+            if (!patient) return;
+
+            const selectEl = document.getElementById('selectExtraDpjp');
+            selectEl.innerHTML = '<option value="">-- Pilih Dokter --</option>';
+
+            // Tampilkan hanya dokter yang belum terdaftar pada pasien ini
+            availableDoctors.forEach(doc => {
+                if (!patient.dpjp.includes(doc)) {
+                    selectEl.innerHTML += `<option value="${doc}">${doc}</option>`;
+                }
+            });
+
+            if (selectEl.options.length <= 1) {
+                alert('Semua dokter yang tersedia sudah terdaftar sebagai DPJP pasien ini.');
+                return;
+            }
+
+            document.getElementById('addDpjpModal').style.display = 'flex';
+        }
+
+        function closeAddDpjpModal() {
+            document.getElementById('addDpjpModal').style.display = 'none';
+        }
+
+        function saveAddedDpjp(e) {
+            e.preventDefault();
+            const selectedDoc = document.getElementById('selectExtraDpjp').value;
+            if (!selectedDoc) return;
+
+            const patient = patientsData.find(p => p.id === currentPatientId);
+            if (patient) {
+                if (!patient.dpjp.includes(selectedDoc)) {
+                    patient.dpjp.push(selectedDoc);
+                    saveData();
+                    alert(`Dokter konsulen "${selectedDoc}" berhasil ditambahkan ke pasien ${patient.name}!`);
+                }
+            }
+
+            closeAddDpjpModal();
+            renderLayout();
+        }
+
+        function openDoctorModal() { document.getElementById('doctorModal').style.display = 'flex'; }
+        function closeDoctorModal() { document.getElementById('doctorModal').style.display = 'none'; }
+
+        function saveNewDoctor(e) {
+            e.preventDefault();
+            const docName = document.getElementById('docName').value.trim();
+            
+            if (availableDoctors.includes(docName)) {
+                alert('Dokter sudah ada di dalam sistem!');
+                return;
+            }
+
+            availableDoctors.push(docName);
+            saveData();
+            alert(`Dokter "${docName}" berhasil ditambahkan!`);
+            
+            closeDoctorModal();
+            document.getElementById('docName').value = '';
+            document.getElementById('docSpec').value = '';
+            renderLayout();
+        }
+
+        window.onload = () => renderLayout();
+    </script>
+</body>
+</html>
