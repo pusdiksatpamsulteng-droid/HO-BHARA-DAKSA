@@ -1,15 +1,11 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Nursing Integration | Laporan Catatan Integrasi Perawat</title>
+    <title>E-Nursing Integration - VVIP Bhara Daksa RS Bhayangkara Palu</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Poppins & Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
             theme: {
@@ -18,467 +14,415 @@
                         sky: {
                             50: '#f0f9ff',
                             100: '#e0f2fe',
-                            250: '#bae6fd',
                             500: '#0ea5e9',
                             600: '#0284c7',
                             700: '#0369a1',
                             800: '#075985',
                             900: '#0c4a6e',
+                        },
+                        gold: {
+                            50: '#fefce8',
+                            100: '#fef9c3',
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                            700: '#a16207',
                         }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        /* Pengaturan Khusus Print / Cetak */
         @media print {
-            body * { visibility: hidden; }
-            #printable-area, #printable-area * { visibility: visible; }
-            #printable-area { position: absolute; left: 0; top: 0; width: 100%; }
-            .no-print { display: none !important; }
+            body {
+                background: white !important;
+                color: black !important;
+                font-size: 11pt;
+            }
+            header, nav, .print\:hidden {
+                display: none !important;
+            }
+            #section-handover {
+                display: block !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+            .print-container {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+            table {
+                border-collapse: collapse !important;
+                width: 100% !important;
+            }
+            th, td {
+                border: 1px solid #334155 !important;
+                padding: 6px !important;
+                color: black !important;
+            }
+            thead {
+                background-color: #f1f5f9 !important;
+                -webkit-print-color-adjust: exact;
+            }
         }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #bae6fd; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #38bdf8; }
     </style>
 </head>
-<body class="h-full bg-sky-50 text-slate-800 flex flex-col md:flex-row overflow-hidden">
+<body class="bg-sky-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
 
-    <!-- SIDEBAR NAVIGATION -->
-    <aside class="w-full md:w-72 bg-white border-r border-sky-100 flex flex-col z-20 shadow-sm shrink-0">
-        <!-- Logo Header -->
-        <div class="p-5 border-b border-sky-100 flex items-center justify-between bg-gradient-to-r from-sky-600 to-sky-500 text-white">
+    <!-- Header / Navbar -->
+    <header class="bg-sky-600 text-white shadow-md sticky top-0 z-40 print:hidden">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm">
-                    <i class="fa-solid fa-notes-medical text-xl text-white"></i>
+                <div class="bg-white text-sky-600 p-2 rounded-xl shadow">
+                    <i class="fa-solid fa-hospital-user text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg tracking-wide leading-tight">E-Nursing</h1>
-                    <p class="text-xs text-sky-100 font-medium">Catatan Integrasi Pasien</p>
+                    <h1 class="font-bold text-lg leading-tight">VVIP Bhara Daksa - RS Bhayangkara Palu</h1>
+                    <p class="text-xs text-sky-100">Sistem Laporan & Catatan Terintegrasi Perawat</p>
                 </div>
             </div>
-            <button id="mobile-menu-close" class="md:hidden text-white hover:text-sky-100 focus:outline-none">
-                <i class="fa-solid fa-xmark text-xl"></i>
+            <div class="flex items-center space-x-3">
+                <!-- Widget Real-time Waktu WITA -->
+                <span id="realtime-clock" class="text-xs bg-sky-700 px-3 py-1.5 rounded-full font-medium hidden sm:inline-block shadow-inner">
+                    <i class="fa-regular fa-calendar-days mr-1"></i> Memuat waktu...
+                </span>
+                <button onclick="bukaModalPasienBaru()" class="bg-white text-sky-600 hover:bg-sky-50 px-3.5 py-1.5 rounded-lg text-sm font-semibold shadow transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Pasien Baru</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="bg-white border-b border-sky-100 shadow-sm sticky top-14 z-30 print:hidden">
+        <div class="max-w-7xl mx-auto px-4 flex overflow-x-auto space-x-6">
+            <button onclick="gantiTab('dashboard')" id="nav-dashboard" class="nav-btn py-3 border-b-2 border-sky-600 text-sky-600 font-semibold text-sm flex items-center space-x-2 whitespace-nowrap">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </button>
+            <button onclick="gantiTab('catatan')" id="nav-catatan" class="nav-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-sky-600 font-medium text-sm flex items-center space-x-2 whitespace-nowrap">
+                <i class="fa-solid fa-notes-medical"></i>
+                <span>Catatan & TTV</span>
+            </button>
+            <button onclick="gantiTab('handover')" id="nav-handover" class="nav-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-sky-600 font-medium text-sm flex items-center space-x-2 whitespace-nowrap">
+                <i class="fa-solid fa-right-left"></i>
+                <span>Hand Over (Aplosan)</span>
+            </button>
+            <button onclick="gantiTab('tugas')" id="nav-tugas" class="nav-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-sky-600 font-medium text-sm flex items-center space-x-2 whitespace-nowrap">
+                <i class="fa-solid fa-list-check"></i>
+                <span>Manajemen Tugas</span>
+            </button>
+            <button onclick="gantiTab('petugas')" id="nav-petugas" class="nav-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-sky-600 font-medium text-sm flex items-center space-x-2 whitespace-nowrap">
+                <i class="fa-solid fa-user-doctor"></i>
+                <span>Tambah Petugas</span>
             </button>
         </div>
+    </nav>
 
-        <!-- Navigation Links -->
-        <nav class="flex-1 overflow-y-auto p-4 space-y-1.5 custom-scrollbar">
-            <p class="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">Menu Utama</p>
-            
-            <a href="#dashboard" onclick="switchTab('dashboard')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 bg-sky-500 text-white shadow-md shadow-sky-500/20" data-target="dashboard">
-                <i class="fa-solid fa-chart-pie w-5 text-center"></i>
-                <span>Dashboard Pasien</span>
-            </a>
+    <!-- Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 print:p-0">
 
-            <a href="#notes" onclick="switchTab('notes')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 text-slate-600 hover:bg-sky-50 hover:text-sky-600" data-target="notes">
-                <i class="fa-solid fa-file-medical-alt w-5 text-center"></i>
-                <span>Catatan & Pemeriksaan</span>
-            </a>
-
-            <a href="#handover" onclick="switchTab('handover')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 text-slate-600 hover:bg-sky-50 hover:text-sky-600" data-target="handover">
-                <i class="fa-solid fa-right-left w-5 text-center"></i>
-                <span>Hand Over (Operan Jaga)</span>
-            </a>
-
-            <a href="#staff" onclick="switchTab('staff')" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 text-slate-600 hover:bg-sky-50 hover:text-sky-600" data-target="staff">
-                <i class="fa-solid fa-user-doctor w-5 text-center"></i>
-                <span>Tambah Petugas</span>
-            </a>
-        </nav>
-
-        <!-- User / Hospital Info Footer -->
-        <div class="p-4 border-t border-sky-100 bg-sky-50/50">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-full bg-sky-200 flex items-center justify-center text-sky-700 font-bold">
-                    <i class="fa-solid fa-user-nurse"></i>
-                </div>
-                <div class="overflow-hidden">
-                    <p class="text-xs font-semibold text-slate-700 truncate">Ns. Siti Aminah, S.Kep</p>
-                    <p class="text-[11px] text-sky-600 truncate">Perawat Jaga Shift Pagi</p>
-                </div>
-            </div>
-        </div>
-    </aside>
-
-    <!-- MAIN CONTENT CONTAINER -->
-    <main class="flex-1 flex flex-col h-full overflow-hidden">
-        <!-- Top Navbar -->
-        <header class="bg-white border-b border-sky-100 h-16 flex items-center justify-between px-6 z-10 shrink-0 shadow-sm">
-            <div class="flex items-center space-x-3">
-                <button id="mobile-menu-toggle" class="md:hidden text-slate-600 hover:text-sky-600 focus:outline-none">
-                    <i class="fa-solid fa-bars text-lg"></i>
-                </button>
-                <h2 id="page-title" class="text-lg font-bold text-slate-800">Dashboard Utama</h2>
-            </div>
-            
-            <div class="flex items-center space-x-4">
-                <div class="hidden sm:flex items-center space-x-2 bg-sky-50 px-3 py-1.5 rounded-lg border border-sky-100 text-xs text-sky-800 font-medium">
-                    <i class="fa-regular fa-calendar-days text-sky-500"></i>
-                    <span id="current-date">Senin, 06 Oktober 2026</span>
-                </div>
-                <div class="relative">
-                    <button class="w-9 h-9 rounded-full bg-sky-100 flex items-center justify-center text-sky-700 hover:bg-sky-200 transition focus:outline-none">
-                        <i class="fa-regular fa-bell"></i>
-                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                    </button>
-                </div>
-            </div>
-        </header>
-
-        <!-- Scrollable Content Area -->
-        <div class="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
-
-            <!-- ================= TAB 1: DASHBOARD ================= -->
-            <div id="tab-dashboard" class="tab-content space-y-6">
-                <!-- Statistics Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                    <!-- Stat 1 -->
-                    <div class="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm flex items-center justify-between relative overflow-hidden">
-                        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-sky-50 rounded-full pointer-events-none"></div>
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Jumlah Pasien Dirawat</p>
-                            <h3 id="stat-total-patients" class="text-3xl font-bold text-slate-800 mt-1">4</h3>
-                            <p class="text-xs text-emerald-600 font-medium mt-1"><i class="fa-solid fa-arrow-up mr-1"></i> Ruangan Terisi Penuh</p>
-                        </div>
-                        <div class="w-12 h-12 bg-sky-100 rounded-xl flex items-center justify-center text-sky-600 text-xl shadow-inner">
-                            <i class="fa-solid fa-bed-pulse"></i>
-                        </div>
-                    </div>
-
-                    <!-- Stat 2 -->
-                    <div class="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm flex items-center justify-between relative overflow-hidden">
-                        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-sky-50 rounded-full pointer-events-none"></div>
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Rencana Tindakan</p>
-                            <h3 class="text-3xl font-bold text-slate-800 mt-1">12</h3>
-                            <p class="text-xs text-sky-600 font-medium mt-1"><i class="fa-solid fa-clock mr-1"></i> 3 Tindakan Menunggu</p>
-                        </div>
-                        <div class="w-12 h-12 bg-sky-100 rounded-xl flex items-center justify-center text-sky-600 text-xl shadow-inner">
-                            <i class="fa-solid fa-list-check"></i>
-                        </div>
-                    </div>
-
-                    <!-- Stat 3: Penjamin Summary Badge -->
-                    <div class="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm flex flex-col justify-between relative overflow-hidden">
-                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Pasien Berdasarkan Penjamin</p>
-                        <div class="flex flex-wrap gap-1.5" id="stat-penjamin-badges">
-                            <!-- Injected by JS -->
-                        </div>
+        <!-- ================= SECTION 1: DASHBOARD ================= -->
+        <section id="section-dashboard" class="space-y-6">
+            <!-- Statistik Atas -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-sky-100 flex items-center space-x-4">
+                    <div class="p-3 bg-sky-100 text-sky-600 rounded-lg text-xl"><i class="fa-solid fa-bed-pulse"></i></div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium uppercase">Jumlah Pasien Dirawat</p>
+                        <h3 id="stat-total-pasien" class="text-2xl font-bold text-slate-800">0</h3>
                     </div>
                 </div>
-
-                <!-- Filters & Action Bar -->
-                <div class="bg-white p-4 rounded-2xl border border-sky-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="flex items-center space-x-3 w-full sm:w-auto">
-                        <div class="relative w-full sm:w-72">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                                <i class="fa-solid fa-filter text-xs"></i>
-                            </span>
-                            <select id="filter-dpjp" onchange="filterPatients()" class="w-full bg-sky-50/50 border border-sky-200 text-slate-700 text-sm rounded-xl pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                <option value="">Semua DPJP (Dokter)</option>
-                            </select>
-                        </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-sky-100 flex items-center space-x-4">
+                    <div class="p-3 bg-sky-100 text-sky-600 rounded-lg text-xl"><i class="fa-solid fa-clipboard-list"></i></div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium uppercase">Rencana Tindakan Aktif</p>
+                        <h3 id="stat-total-tugas" class="text-2xl font-bold text-slate-800">0</h3>
                     </div>
-
-                    <button onclick="openModal('modal-add-patient')" class="w-full sm:w-auto bg-sky-500 hover:bg-sky-600 text-white font-medium px-5 py-2.5 rounded-xl shadow-md shadow-sky-500/20 transition flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-user-plus"></i>
-                        <span>Tambah Pasien Baru</span>
-                    </button>
                 </div>
-
-                <!-- Patient Grid Container -->
-                <div>
-                    <h3 class="text-base font-bold text-slate-800 mb-4 flex items-center">
-                        <i class="fa-solid fa-hospital-user text-sky-500 mr-2"></i> Daftar Pasien Rawat Inap
-                    </h3>
-                    <div id="patient-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
-                        <!-- Dynamic Patient Cards -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-sky-100 flex items-center space-x-4">
+                    <div class="p-3 bg-sky-100 text-sky-600 rounded-lg text-xl"><i class="fa-solid fa-file-shield"></i></div>
+                    <div>
+                        <p class="text-xs text-slate-500 font-medium uppercase">Pasien Berdasarkan Penjamin</p>
+                        <h3 id="stat-penjamin" class="text-sm font-bold text-slate-800 leading-snug mt-1">-</h3>
                     </div>
                 </div>
             </div>
 
-            <!-- ================= TAB 2: CATATAN & PEMERIKSAAN ================= -->
-            <div id="tab-notes" class="tab-content hidden space-y-6">
-                <!-- Patient Selector for Notes -->
-                <div class="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm">
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Pilih Pasien untuk Dikelola Catatannya:</label>
-                    <select id="select-note-patient" onchange="loadPatientNotes()" class="w-full bg-sky-50/50 border border-sky-200 text-slate-700 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-sky-500">
-                        <!-- Injected -->
+            <!-- Filter DPJP & Pencarian -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-sky-100 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center space-x-2 w-full md:w-auto">
+                    <span class="text-sm font-medium text-slate-600"><i class="fa-solid fa-filter mr-1 text-sky-600"></i> Filter DPJP:</span>
+                    <select id="filter-dpjp" onchange="renderDashboard()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-sky-500 bg-white">
+                        <option value="">Semua DPJP</option>
                     </select>
                 </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Left Column: TTV & Form Catatan -->
-                    <div class="lg:col-span-2 space-y-6">
-                        <!-- Tanda Tanda Vital Form -->
-                        <div class="bg-white p-6 rounded-2xl border border-sky-100 shadow-sm">
-                            <h3 class="font-bold text-slate-800 mb-4 flex items-center">
-                                <i class="fa-solid fa-heart-pulse text-sky-500 mr-2"></i> Input Tanda-Tanda Vital (TTV) Terbaru
-                            </h3>
-                            <form id="form-ttv" onsubmit="saveTTV(event)" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tekanan Darah</label>
-                                    <input type="text" id="ttv-td" placeholder="120/80 mmHg" required class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nadi</label>
-                                    <input type="text" id="ttv-nadi" placeholder="80 x/menit" required class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Suhu Tubuh</label>
-                                    <input type="text" id="ttv-suhu" placeholder="36.5 °C" required class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Pernapasan (RR)</label>
-                                    <input type="text" id="ttv-rr" placeholder="20 x/menit" required class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Saturasi O2 (SpO2)</label>
-                                    <input type="text" id="ttv-spo2" placeholder="98%" required class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Skala Nyeri</label>
-                                    <input type="text" id="ttv-nyeri" placeholder="Skala 0-10" required class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                </div>
-                                <div class="col-span-2 sm:col-span-3 flex justify-end mt-2">
-                                    <button type="submit" class="bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium px-5 py-2 rounded-xl transition shadow-sm">
-                                        <i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan TTV
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- Catatan Perkembangan Perawat (SOAP) -->
-                        <div class="bg-white p-6 rounded-2xl border border-sky-100 shadow-sm">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="font-bold text-slate-800 flex items-center">
-                                    <i class="fa-solid fa-clipboard-user text-sky-500 mr-2"></i> Catatan Keperawatan (SOAP)
-                                </h3>
-                                <button onclick="openNoteModal()" class="bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-semibold px-3 py-2 rounded-xl border border-sky-200 transition flex items-center space-x-1.5">
-                                    <i class="fa-solid fa-plus"></i>
-                                    <span>Tambah Catatan</span>
-                                </button>
-                            </div>
-                            <div id="notes-list-container" class="space-y-3">
-                                <!-- Dynamic Notes List -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right Column: Lampiran Hasil Pemeriksaan -->
-                    <div class="space-y-6">
-                        <div class="bg-white p-6 rounded-2xl border border-sky-100 shadow-sm">
-                            <h3 class="font-bold text-slate-800 mb-4 flex items-center">
-                                <i class="fa-solid fa-file-image text-sky-500 mr-2"></i> Hasil Pemeriksaan (Lab, EKG, Radiologi)
-                            </h3>
-                            
-                            <!-- Upload Box -->
-                            <div class="border-2 border-dashed border-sky-200 rounded-2xl p-5 text-center bg-sky-50/50 hover:bg-sky-50 transition cursor-pointer mb-5" onclick="document.getElementById('file-input').click()">
-                                <i class="fa-solid fa-cloud-arrow-up text-3xl text-sky-400 mb-2"></i>
-                                <p class="text-xs font-semibold text-slate-700">Klik untuk Upload File / Foto</p>
-                                <p class="text-[11px] text-slate-400 mt-0.5">EKG, Lab, Radiologi (PNG, JPG, PDF)</p>
-                                <input type="file" id="file-input" class="hidden" accept="image/*" onchange="handleFileUpload(event)">
-                            </div>
-
-                            <!-- File List Grid -->
-                            <div id="exam-files-grid" class="space-y-3">
-                                <!-- Dynamic File Items -->
-                            </div>
-                        </div>
-                    </div>
+                <div class="w-full md:w-72 relative">
+                    <input type="text" id="cari-pasien" oninput="renderDashboard()" placeholder="Cari nama pasien / No. RM..." class="w-full border border-slate-300 rounded-lg pl-9 pr-3 py-1.5 text-sm focus:outline-none focus:border-sky-500">
+                    <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-sm"></i>
                 </div>
             </div>
 
-            <!-- ================= TAB 3: HAND OVER (OPERAN JAGA) ================= -->
-            <div id="tab-handover" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-2xl border border-sky-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 no-print">
+            <!-- Kartu Kotak Pasien -->
+            <div>
+                <h3 class="text-base font-bold text-slate-700 mb-3"><i class="fa-solid fa-hospital mr-2 text-sky-600"></i>Daftar Kotak Pasien Dirawat (VVIP Bhara Daksa)</h3>
+                <div id="grid-pasien" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- Data Pasien -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 2: CATATAN PERAWAT & TTV ================= -->
+        <section id="section-catatan" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-sky-100">
+                <h2 class="text-base font-bold text-slate-800 mb-4"><i class="fa-solid fa-notes-medical text-sky-600 mr-2"></i>Catatan Perkembangan & Tanda Vital (TTV)</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div>
-                        <h3 class="font-bold text-slate-800 text-lg">Lembar Operan Jaga Shift (Hand Over)</h3>
-                        <p class="text-xs text-slate-500">Laporan terintegrasi kondisi klinis pasien & tindakan tertunda antar shift</p>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Pilih Pasien</label>
+                        <select id="catatan-select-pasien" onchange="muatCatatanPasien()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:border-sky-500 bg-white">
+                            <!-- Diisi JS -->
+                        </select>
                     </div>
-                    <button onclick="window.print()" class="bg-sky-500 hover:bg-sky-600 text-white font-medium px-5 py-2.5 rounded-xl shadow-md shadow-sky-500/20 transition flex items-center space-x-2">
+                </div>
+
+                <!-- Input TTV & Catatan Baru -->
+                <div class="bg-sky-50 p-4 rounded-xl border border-sky-100 space-y-4">
+                    <h3 class="text-sm font-semibold text-sky-900">Tambah Catatan & TTV Baru</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block text-xs text-slate-600 mb-1">Tekanan Darah (mmHg)</label>
+                            <input type="text" id="input-td" placeholder="120/80" class="w-full border border-slate-300 rounded-lg p-1.5 text-sm bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-600 mb-1">Nadi (x/menit)</label>
+                            <input type="text" id="input-nadi" placeholder="80" class="w-full border border-slate-300 rounded-lg p-1.5 text-sm bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-600 mb-1">Suhu (°C)</label>
+                            <input type="text" id="input-suhu" placeholder="36.5" class="w-full border border-slate-300 rounded-lg p-1.5 text-sm bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-600 mb-1">SpO2 (%)</label>
+                            <input type="text" id="input-spo2" placeholder="98" class="w-full border border-slate-300 rounded-lg p-1.5 text-sm bg-white">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-600 mb-1">Catatan Keperawatan (SOAP)</label>
+                        <textarea id="input-catatan-teks" rows="2" placeholder="S: Keluhan... O: Keadaan umum... A: Masalah... P: Intervensi..." class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:outline-none focus:border-sky-500"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="tambahCatatanBaru()" class="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition">
+                            <i class="fa-solid fa-plus mr-1"></i> Simpan Catatan & TTV
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Riwayat Catatan -->
+                <div class="mt-6">
+                    <h3 class="text-sm font-bold text-slate-700 mb-3">Riwayat Catatan & TTV Pasien</h3>
+                    <div id="container-riwayat-catatan" class="space-y-3">
+                        <!-- Render JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 3: HAND OVER ================= -->
+        <section id="section-handover" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-sky-100 space-y-4 print-container">
+                
+                <!-- KOP SURAT KHUSUS CETAK -->
+                <div class="hidden print:block text-center border-b-2 border-slate-800 pb-3 mb-4">
+                    <h2 class="text-base font-bold tracking-wider">RUMAH SAKIT BHAYANGKARA PALU</h2>
+                    <h1 class="text-lg font-extrabold uppercase tracking-wide">RUANGAN VVIP BHARA DAKSA</h1>
+                    <p class="text-xs text-slate-700 mt-0.5">LEMBAR SERAH TERIMA / HAND OVER (APLOSAN) SHIFT KEPERAWATAN</p>
+                </div>
+
+                <div class="flex justify-between items-center print:hidden">
+                    <h2 class="text-base font-bold text-slate-800"><i class="fa-solid fa-right-left text-sky-600 mr-2"></i>Lembar Hand Over (Operan Shift)</h2>
+                    <button onclick="window.print()" class="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition flex items-center space-x-1.5">
                         <i class="fa-solid fa-print"></i>
-                        <span>Cetak Laporan Hand Over</span>
+                        <span>Cetak Lembar Resmi</span>
                     </button>
                 </div>
 
-                <!-- Printable Document Area -->
-                <div id="printable-area" class="bg-white p-8 rounded-2xl border border-sky-100 shadow-sm space-y-6">
-                    <!-- Hospital Header -->
-                    <div class="border-b border-slate-200 pb-5 flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 bg-sky-500 rounded-xl flex items-center justify-center text-white text-2xl font-bold">
-                                <i class="fa-solid fa-hospital"></i>
-                            </div>
-                            <div>
-                                <h2 class="font-bold text-xl text-slate-800">RUMAH SAKIT SEHAT SEJAHTERA</h2>
-                                <p class="text-xs text-slate-500">Jl. Kesehatan Raya No. 10, Telp (021) 555-0199</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xs font-semibold text-slate-400 uppercase">Dokumen Hand Over</p>
-                            <p class="text-sm font-bold text-sky-600" id="print-timestamp">Senin, 06 Okt 2026 - Shift Pagi</p>
-                        </div>
-                    </div>
-
-                    <!-- Handover Personnel Selection (No Print hide if needed or styled) -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-sky-50/70 p-4 rounded-xl border border-sky-100">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Perawat Pemberi Aplosan:</label>
-                            <select id="handover-giver" class="w-full bg-white border border-sky-200 text-slate-700 text-xs rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                <!-- Injected Staff Nurses -->
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Perawat Penerima Aplosan:</label>
-                            <select id="handover-receiver" class="w-full bg-white border border-sky-200 text-slate-700 text-xs rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                <!-- Injected Staff Nurses -->
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-600 mb-1">Dokter Jaga Terkait:</label>
-                            <select id="handover-doctor" class="w-full bg-white border border-sky-200 text-slate-700 text-xs rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                <!-- Injected Staff Doctors -->
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Patient Summary Table -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-sky-50 p-4 rounded-xl border border-sky-100 print:bg-white print:border-none print:p-0 print:mb-4">
                     <div>
-                        <h4 class="font-bold text-slate-800 text-sm mb-3"><i class="fa-solid fa-clipboard-list text-sky-500 mr-1.5"></i> Ringkasan Kondisi Pasien & Tindakan Tertunda</h4>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead>
-                                    <tr class="bg-sky-50 text-slate-700 border-b border-sky-200">
-                                        <th class="p-3 font-semibold">Ruang / No. RM</th>
-                                        <th class="p-3 font-semibold">Nama Pasien</th>
-                                        <th class="p-3 font-semibold">Diagnosa Medis</th>
-                                        <th class="p-3 font-semibold">TTV Terakhir</th>
-                                        <th class="p-3 font-semibold">Tindakan Belum Selesai</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="handover-table-body" class="divide-y divide-sky-100">
-                                    <!-- Injected -->
-                                </tbody>
-                            </table>
-                        </div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1 print:font-bold print:text-black">Perawat Pemberi Aplosan</label>
+                        <select id="handover-pemberi" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white print:border-none print:p-0 print:font-semibold"></select>
                     </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1 print:font-bold print:text-black">Perawat Penerima Aplosan</label>
+                        <select id="handover-penerima" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white print:border-none print:p-0 print:font-semibold"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1 print:font-bold print:text-black">Kepala Ruangan (Karu)</label>
+                        <select id="handover-karu" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white print:border-none print:p-0 print:font-semibold"></select>
+                    </div>
+                </div>
 
-                    <!-- Signatures -->
-                    <div class="grid grid-cols-2 pt-8 text-center text-xs">
-                        <div>
-                            <p class="text-slate-500 mb-16">Perawat Pemberi Aplosan</p>
-                            <p id="sign-giver" class="font-bold text-slate-800 underline">(Ns. Budi Santoso, S.Kep)</p>
-                        </div>
-                        <div>
-                            <p class="text-slate-500 mb-16">Perawat Penerima Aplosan</p>
-                            <p id="sign-receiver" class="font-bold text-slate-800 underline">(Ns. Siti Aminah, S.Kep)</p>
-                        </div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-700 mb-3 print:hidden">Ringkasan Status Pasien & Tindakan Tertunda</h3>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl print:border-none">
+                        <table class="w-full text-left text-sm text-slate-700">
+                            <thead class="bg-sky-100 text-sky-900 font-semibold border-b border-sky-200">
+                                <tr>
+                                    <th class="p-3">Kamar & No. RM</th>
+                                    <th class="p-3">Nama Pasien / Umur</th>
+                                    <th class="p-3">Diagnosa & Penjamin</th>
+                                    <th class="p-3">Tindakan Belum Selesai</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabel-handover-body" class="divide-y divide-slate-200">
+                                <!-- Render JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TANDA TANGAN DIBAWAH KHUSUS CETAK -->
+                <div class="hidden print:grid grid-cols-3 gap-6 pt-10 text-center text-xs">
+                    <div>
+                        <p class="mb-14">Perawat Pemberi Operan,</p>
+                        <p id="print-nama-pemberi" class="font-bold underline">_________________________</p>
+                    </div>
+                    <div>
+                        <p class="mb-14">Perawat Penerima Operan,</p>
+                        <p id="print-nama-penerima" class="font-bold underline">_________________________</p>
+                    </div>
+                    <div>
+                        <p class="mb-14">Mengetahui,<br>Kepala Ruangan VVIP Bhara Daksa</p>
+                        <p id="print-nama-karu" class="font-bold underline">_________________________</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= SECTION 4: MANAJEMEN TUGAS ================= -->
+        <section id="section-tugas" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-sky-100 space-y-4">
+                <h2 class="text-base font-bold text-slate-800"><i class="fa-solid fa-list-check text-sky-600 mr-2"></i>Manajemen Tugas & Rencana Tindakan</h2>
+                
+                <!-- Form Tambah Tugas -->
+                <div class="bg-sky-50 p-4 rounded-xl border border-sky-100 grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+                    <div>
+                        <label class="block text-xs text-slate-600 mb-1">Pilih Pasien</label>
+                        <select id="tugas-pasien" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+                            <!-- Diisi JS -->
+                        </select>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs text-slate-600 mb-1">Deskripsi Tindakan / Tugas</label>
+                        <input type="text" id="tugas-deskripsi" placeholder="Contoh: Berikan injeksi Ceftriaxone 1g jam 12.00" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+                    </div>
+                    <div>
+                        <button onclick="tambahTugasBaru()" class="w-full bg-sky-600 hover:bg-sky-700 text-white py-2 px-4 rounded-lg text-sm font-semibold shadow transition">
+                            <i class="fa-solid fa-plus mr-1"></i> Tambah Tugas
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Daftar Tugas -->
+                <div>
+                    <h3 class="text-sm font-bold text-slate-700 mb-3">Daftar Rencana Tindakan Aktif</h3>
+                    <div id="container-daftar-tugas" class="space-y-2">
+                        <!-- Render JS -->
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- ================= TAB 4: TAMBAH PETUGAS ================= -->
-            <div id="tab-staff" class="tab-content hidden space-y-6">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Form Tambah Petugas -->
-                    <div class="bg-white p-6 rounded-2xl border border-sky-100 shadow-sm h-fit">
-                        <h3 class="font-bold text-slate-800 mb-4 flex items-center">
-                            <i class="fa-solid fa-user-plus text-sky-500 mr-2"></i> Pendaftaran Petugas Baru
-                        </h3>
-                        <form id="form-staff" onsubmit="saveStaff(event)" class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap & Gelar</label>
-                                <input type="text" id="staff-name" placeholder="Contoh: dr. Andi Pratama, Sp.PD" required class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Peran / Profesi</label>
-                                <select id="staff-role" required class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-                                    <option value="Dokter">Dokter (DPJP)</option>
-                                    <option value="Perawat">Perawat Ruangan</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Spesialisasi / Ruangan</label>
-                                <input type="text" id="staff-spec" placeholder="Contoh: Penyakit Dalam / Melati 1" required class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-                            </div>
-                            <button type="submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-medium py-2.5 rounded-xl transition shadow-md shadow-sky-500/20 text-sm">
-                                <i class="fa-solid fa-floppy-disk mr-1.5"></i> Simpan Petugas
-                            </button>
-                        </form>
+        <!-- ================= SECTION 5: TAMBAH PETUGAS ================= -->
+        <section id="section-petugas" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-sky-100 max-w-xl mx-auto space-y-4">
+                <h2 class="text-base font-bold text-slate-800"><i class="fa-solid fa-user-doctor text-sky-600 mr-2"></i>Pendaftaran Petugas Baru</h2>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Nama Lengkap beserta Gelar</label>
+                        <input type="text" id="petugas-nama" placeholder="Contoh: Ns. Siti Aminah, S.Kep / dr. Budi, Sp.PD" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:border-sky-500">
                     </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Peran / Profesi</label>
+                        <select id="petugas-peran" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:border-sky-500 bg-white">
+                            <option value="Perawat">Perawat</option>
+                            <option value="Dokter">Dokter</option>
+                            <option value="Kepala Ruangan">Kepala Ruangan (Karu)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Spesialisasi / Ruangan Tugas</label>
+                        <input type="text" id="petugas-info" value="VVIP Bhara Daksa" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:border-sky-500">
+                    </div>
+                    <button onclick="simpanPetugasBaru()" class="w-full bg-sky-600 hover:bg-sky-700 text-white py-2 rounded-lg text-sm font-semibold shadow transition">
+                        <i class="fa-solid fa-user-plus mr-1"></i> Daftarkan Petugas
+                    </button>
+                </div>
 
-                    <!-- Daftar Petugas Terdaftar -->
-                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-sky-100 shadow-sm">
-                        <h3 class="font-bold text-slate-800 mb-4 flex items-center">
-                            <i class="fa-solid fa-users-rectangle text-sky-500 mr-2"></i> Direktori Dokter & Perawat Aktif
-                        </h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead>
-                                    <tr class="bg-sky-50 text-slate-700 border-b border-sky-200">
-                                        <th class="p-3 font-semibold">Nama & Gelar</th>
-                                        <th class="p-3 font-semibold">Peran</th>
-                                        <th class="p-3 font-semibold">Spesialisasi / Unit</th>
-                                        <th class="p-3 font-semibold text-center">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="staff-table-body" class="divide-y divide-sky-100">
-                                    <!-- Injected -->
-                                </tbody>
-                            </table>
-                        </div>
+                <div class="mt-6 border-t pt-4">
+                    <h3 class="text-xs font-bold text-slate-600 uppercase mb-2">Daftar Petugas Terdaftar</h3>
+                    <div id="list-petugas-terdaftar" class="space-y-2 max-h-48 overflow-y-auto">
+                        <!-- Render JS -->
                     </div>
                 </div>
             </div>
+        </section>
 
-        </div>
     </main>
 
-    <!-- ================= MODAL: TAMBAH PASIEN BARU ================= -->
-    <div id="modal-add-patient" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden border border-sky-100">
-            <div class="bg-sky-500 text-white px-6 py-4 flex items-center justify-between">
-                <h3 class="font-bold text-base"><i class="fa-solid fa-user-plus mr-2"></i> Form Tambah Pasien Baru</h3>
-                <button onclick="closeModal('modal-add-patient')" class="text-white hover:text-sky-100 focus:outline-none">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
+    <!-- ================= MODAL TAMBAH PASIEN BARU ================= -->
+    <div id="modal-pasien" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-base text-slate-800"><i class="fa-solid fa-user-plus text-sky-600 mr-2"></i>Tambah Pasien Baru</h3>
+                <button onclick="tutupModalPasienBaru()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <form id="form-patient" onsubmit="savePatient(event)" class="p-6 space-y-4">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Pasien</label>
-                        <input type="text" id="p-name" placeholder="Nama Lengkap" required class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">No. Rekam Medis (RM)</label>
-                        <input type="text" id="p-rm" placeholder="00-XX-XX" required class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Umur (Tahun)</label>
-                        <input type="number" id="p-age" placeholder="Contoh: 45" required class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Ruangan / Kamar</label>
-                        <input type="text" id="p-room" placeholder="Melati 3A" required class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-                    </div>
-                </div>
+            <div class="space-y-3">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Diagnosa Medis</label>
-                    <textarea id="p-diag" rows="2" placeholder="Diagnosa awal pasien..." required class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Nama Pasien</label>
+                    <input type="text" id="modal-nama" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">Penjamin</label>
-                        <select id="p-insurance" class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Umur (Tahun)</label>
+                        <input type="number" id="modal-umur" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">No. Rekam Medis (RM)</label>
+                        <input type="text" id="modal-rm" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Kamar / Ruangan</label>
+                        <select id="modal-ruangan" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
+                            <option value="VVIP 1">VVIP 1</option>
+                            <option value="VVIP 2">VVIP 2</option>
+                            <option value="VVIP 3">VVIP 3</option>
+                            <option value="VVIP 4">VVIP 4</option>
+                            <option value="Bhara Daksa 5A">Bhara Daksa 5A</option>
+                            <option value="Bhara Daksa 5B">Bhara Daksa 5B</option>
+                            <option value="Bhara Daksa 6A">Bhara Daksa 6A</option>
+                            <option value="Bhara Daksa 6B">Bhara Daksa 6B</option>
+                            <option value="Bhara Daksa 7A">Bhara Daksa 7A</option>
+                            <option value="Bhara Daksa 7B">Bhara Daksa 7B</option>
+                            <option value="Bhara Daksa 8A">Bhara Daksa 8A</option>
+                            <option value="Bhara Daksa 8B">Bhara Daksa 8B</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Penjamin</label>
+                        <select id="modal-penjamin" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
                             <option value="BPJS">BPJS</option>
                             <option value="Umum">Umum</option>
                             <option value="POLRI">POLRI</option>
@@ -486,624 +430,598 @@
                             <option value="Asuransi">Asuransi</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">DPJP Utama</label>
-                        <select id="p-dpjp" class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-                            <!-- Injected Doctors -->
-                        </select>
-                    </div>
                 </div>
-                <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100">
-                    <button type="button" onclick="closeModal('modal-add-patient')" class="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition">Batal</button>
-                    <button type="submit" class="px-5 py-2 text-sm font-medium bg-sky-500 hover:bg-sky-600 text-white rounded-xl transition shadow-md shadow-sky-500/20">Simpan Pasien</button>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Diagnosa Medis</label>
+                    <textarea id="modal-diagnosa" rows="2" class="w-full border border-slate-300 rounded-lg p-2 text-sm"></textarea>
                 </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- ================= MODAL: TAMBAH DPJP ================= -->
-    <div id="modal-add-dpjp" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden border border-sky-100">
-            <div class="bg-sky-500 text-white px-6 py-4 flex items-center justify-between">
-                <h3 class="font-bold text-sm"><i class="fa-solid fa-user-doctor mr-2"></i> Tambah DPJP Tambahan</h3>
-                <button onclick="closeModal('modal-add-dpjp')" class="text-white hover:text-sky-100 focus:outline-none">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">DPJP Utama</label>
+                    <select id="modal-dpjp" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white"></select>
+                </div>
             </div>
-            <form id="form-dpjp-extra" onsubmit="saveExtraDPJP(event)" class="p-6 space-y-4">
-                <input type="hidden" id="dpjp-patient-id">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Pilih Dokter Tambahan</label>
-                    <select id="select-extra-doctor" class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-                        <!-- Injected -->
-                    </select>
-                </div>
-                <div class="flex justify-end space-x-2 pt-2">
-                    <button type="button" onclick="closeModal('modal-add-dpjp')" class="px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg">Batal</button>
-                    <button type="submit" class="px-4 py-1.5 text-xs font-medium bg-sky-500 text-white rounded-lg shadow">Tambahkan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- ================= MODAL: TAMBAH/EDIT CATATAN PERAWAT ================= -->
-    <div id="modal-note" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-sky-100">
-            <div class="bg-sky-500 text-white px-6 py-4 flex items-center justify-between">
-                <h3 id="note-modal-title" class="font-bold text-sm"><i class="fa-solid fa-pen-to-square mr-2"></i> Tambah Catatan Perawat</h3>
-                <button onclick="closeModal('modal-note')" class="text-white hover:text-sky-100 focus:outline-none">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
+            <div class="flex justify-end space-x-2 pt-2 border-t">
+                <button onclick="tutupModalPasienBaru()" class="px-4 py-2 border rounded-lg text-sm text-slate-600 hover:bg-slate-50">Batal</button>
+                <button onclick="simpanPasienBaru()" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-sm font-semibold shadow">Simpan Pasien</button>
             </div>
-            <form id="form-note-save" onsubmit="saveNursingNote(event)" class="p-6 space-y-4">
-                <input type="hidden" id="note-id">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Waktu / Shift</label>
-                    <input type="text" id="note-time" class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" readonly>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Isi Catatan Keperawatan (SOAP / Tindakan)</label>
-                    <textarea id="note-content" rows="4" placeholder="S: Pasien mengeluh nyeri dada... O: TD 120/80... A: Nyeri akut... P: Berikan analgetik..." required class="w-full bg-sky-50/50 border border-sky-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
-                </div>
-                <div class="flex justify-end space-x-3 pt-2">
-                    <button type="button" onclick="closeModal('modal-note')" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-xl">Batal</button>
-                    <button type="submit" class="px-4 py-2 text-xs font-medium bg-sky-500 text-white rounded-xl shadow">Simpan Catatan</button>
-                </div>
-            </form>
         </div>
     </div>
 
-    <!-- ================= MODAL: FULLSCREEN IMAGE VIEWER ================= -->
-    <div id="modal-fullscreen" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex flex-col items-center justify-center p-4 hidden">
-        <div class="absolute top-4 right-4 flex items-center space-x-3">
-            <span id="fullscreen-filename" class="text-white text-xs font-medium bg-white/10 px-3 py-1.5 rounded-lg backdrop-blur-sm">filename.jpg</span>
-            <button onclick="closeFullscreen()" class="w-10 h-10 rounded-full bg-white/20 text-white flex items-center justify-center hover:bg-white/30 transition">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-        </div>
-        <div class="max-w-4xl max-h-[85vh] overflow-auto flex items-center justify-center">
-            <img id="fullscreen-img" src="" alt="Full Screen Result" class="max-w-full max-h-[80vh] rounded-xl shadow-2xl object-contain border border-white/10">
+    <!-- ================= MODAL TAMBAH DPJP (DROPDOWN PILIH DOKTER) ================= -->
+    <div id="modal-dpjp" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-xl space-y-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-bold text-sm text-slate-800"><i class="fa-solid fa-user-doctor text-sky-600 mr-1.5"></i>Tambah DPJP Pasien</h3>
+                <button onclick="tutupModalDpjp()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1.5">Pilih Dokter DPJP:</label>
+                <select id="select-pilih-dokter" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:outline-none focus:border-sky-500">
+                    <!-- Diisi JS -->
+                </select>
+                <input type="hidden" id="current-pasien-id-dpjp">
+            </div>
+            <div class="flex justify-end space-x-2 pt-2 border-t">
+                <button onclick="tutupModalDpjp()" class="px-3 py-1.5 border rounded-lg text-xs text-slate-600 hover:bg-slate-50">Batal</button>
+                <button onclick="simpanDpjpBaru()" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-xs font-semibold shadow">Tambah DPJP</button>
+            </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- ================= MODAL FULL SCREEN GAMBAR / FILE ================= -->
+    <div id="modal-lightbox" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="relative max-w-4xl w-full flex flex-col items-center">
+            <button onclick="tutupLightbox()" class="absolute -top-10 right-0 text-white text-xl hover:text-sky-300"><i class="fa-solid fa-xmark"></i></button>
+            <img id="lightbox-img" src="" alt="Lampiran Pemeriksaan" class="max-h-[80vh] rounded-lg shadow-2xl object-contain">
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
-        // --- INITIAL STATE & DATABASE ---
-        let appState = {
-            staff: [
-                { id: 1, name: "dr. Hendra Wijaya, Sp.JP", role: "Dokter", spec: "Kardiologi (Jantung)" },
-                { id: 2, name: "dr. Rina Marlina, Sp.PD", role: "Dokter", spec: "Penyakit Dalam" },
-                { id: 3, name: "Ns. Siti Aminah, S.Kep", role: "Perawat", spec: "Ruang Melati" },
-                { id: 4, name: "Ns. Budi Santoso, S.Kep", role: "Perawat", spec: "Ruang Melati" },
-                { id: 5, name: "Ns. Dewi Lestari, S.Kep", role: "Perawat", spec: "Ruang Anggrek" }
-            ],
-            patients: [
-                {
-                    id: 101,
-                    name: "Bpk. Suherman",
-                    rm: "34-52-11",
-                    age: 58,
-                    room: "Melati 1",
-                    diag: "STEMI Anterior / Gagal Jantung Kongestif",
-                    insurance: "BPJS",
-                    dpjp: "dr. Hendra Wijaya, Sp.JP",
-                    extraDpjp: ["dr. Rina Marlina, Sp.PD"],
-                    ttv: { td: "130/85 mmHg", nadi: "88 x/m", suhu: "36.8 °C", rr: "22 x/m", spo2: "96%", nyeri: "Skala 3" },
-                    notes: [
-                        { id: 1, time: "06 Okt 2026, 08:00 (Shift Pagi)", content: "S: Pasien mengatakan nyeri dada berkurang.\nO: TD 130/85, Nadi 88x/m, RR 22x/m.\nA: Penurunan curah jantung teratasi sebagian.\nP: Lanjutkan injeksi Nitrocetin per drip." }
-                    ],
-                    files: [
-                        { id: 1, name: "EKG 12 Lead (Pre-Infark)", type: "EKG", url: "https://placehold.co/600x400/0ea5e9/ffffff?text=EKG+Hasil+Pemeriksaan+Pasien" },
-                        { id: 2, name: "Hasil Lab Darah Lengkap", type: "Lab", url: "https://placehold.co/600x400/0284c7/ffffff?text=Hasil+Laboratorium+Darah" }
-                    ],
-                    pendingAction: "Pemberian cairan infus NaCl 0.9% 500ml / 8 jam & Cek Troponin T ulang jam 14.00"
-                },
-                {
-                    id: 102,
-                    name: "Ibu Ratna Sari",
-                    rm: "34-52-12",
-                    age: 42,
-                    room: "Melati 2",
-                    diag: "Diabetes Mellitus Tipe 2 + Ulkus Diabetikum",
-                    insurance: "Umum",
-                    dpjp: "dr. Rina Marlina, Sp.PD",
-                    extraDpjp: [],
-                    ttv: { td: "120/80 mmHg", nadi: "80 x/m", suhu: "37.2 °C", rr: "18 x/m", spo2: "99%", nyeri: "Skala 2" },
-                    notes: [
-                        { id: 1, time: "06 Okt 2026, 07:30 (Shift Pagi)", content: "S: Luka kaki terasa sedikit berdenyut.\nO: GDS 240 mg/dL, luka bersih.\nA: Risiko infeksi dan ketidakstabilan kadar glukosa.\nP: Berikan Insulin Novorapid 8 IU." }
-                    ],
-                    files: [
-                        { id: 1, name: "Foto Luka Ulkus (Progress)", type: "Radiologi", url: "https://placehold.co/600x400/38bdf8/ffffff?text=Foto+Klinis+Luka+Pasien" }
-                    ],
-                    pendingAction: "Ganti dressing luka pukul 14.00 & Cek GDS post-prandial"
-                }
-            ],
-            selectedPatientId: 101
-        };
+        // Data Dummy Awal
+        let dataPetugas = [
+            { nama: "dr. Andi Wijaya, Sp.PD", peran: "Dokter", info: "Penyakit Dalam" },
+            { nama: "dr. Siska Maharani, Sp.A", peran: "Dokter", info: "Anak" },
+            { nama: "Ns. Rina Melati, S.Kep", peran: "Perawat", info: "VVIP Bhara Daksa" },
+            { nama: "Ns. Joko Susilo, S.Kep", peran: "Perawat", info: "VVIP Bhara Daksa" },
+            { nama: "Ns. Hj. Nur Indah, S.Kep., M.Kes", peran: "Kepala Ruangan", info: "Karu VVIP Bhara Daksa" }
+        ];
 
-        // --- NAVIGATION TABS ---
-        function switchTab(targetId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`tab-${targetId}`).classList.remove('hidden');
-
-            document.querySelectorAll('.nav-item').forEach(el => {
-                el.classList.remove('bg-sky-500', 'text-white', 'shadow-md', 'shadow-sky-500/20');
-                el.classList.add('text-slate-600', 'hover:bg-sky-50', 'hover:text-sky-600');
-            });
-
-            const activeBtn = document.querySelector(`.nav-item[data-target="${targetId}"]`);
-            if(activeBtn) {
-                activeBtn.classList.remove('text-slate-600', 'hover:bg-sky-50', 'hover:text-sky-600');
-                activeBtn.classList.add('bg-sky-500', 'text-white', 'shadow-md', 'shadow-sky-500/20');
+        let dataPasien = [
+            {
+                id: 1,
+                nama: "Kombes Pol. H. M. Ridwan",
+                umur: 52,
+                rm: "10-23-45",
+                ruangan: "VVIP 1",
+                diagnosa: "Hipertensi Esensial & Fatigue",
+                penjamin: "POLRI",
+                dpjp: ["dr. Andi Wijaya, Sp.PD"],
+                catatan: [
+                    { waktu: "06/10/2026 08:00", ttd: "TD: 130/85, N: 84, S: 36.6, SpO2: 98%", teks: "S: Pasien mengeluh pusing berkurang. O: Kesadaran compos mentis. A: Tekanan darah stabil. P: Lanjutkan terapi oral." }
+                ],
+                fileMedis: [],
+                tindakan: [
+                    { id: 101, teks: "Cek Tensi Berkala jam 14.00", selesai: false }
+                ]
             }
+        ];
 
-            const titles = {
-                dashboard: "Dashboard Utama Pasien",
-                notes: "Catatan Keperawatan & Pemeriksaan Penunjang",
-                handover: "Hand Over (Operan Jaga Shift)",
-                staff: "Manajemen Data Petugas Medis"
+        let dataTugasGlobal = [
+            { id: 1, pasienId: 1, pasienNama: "Kombes Pol. H. M. Ridwan", teks: "Cek Tensi Berkala jam 14.00", selesai: false }
+        ];
+
+        // Fungsi Jam Real-Time WITA
+        function updateRealtimeClock() {
+            const options = { 
+                timeZone: 'Asia/Makassar', 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                hour12: false
             };
-            document.getElementById('page-title').innerText = titles[targetId];
+            try {
+                const now = new Date();
+                const formatter = new Intl.DateTimeFormat('id-ID', options);
+                let formattedString = formatter.format(now);
+                document.getElementById('realtime-clock').innerHTML = `<i class="fa-regular fa-calendar-days mr-1"></i> ${formattedString} WITA`;
+            } catch (e) {
+                console.error("Gagal memuat jam real-time", e);
+            }
+        }
+        setInterval(updateRealtimeClock, 1000);
 
-            // Refresh respective view data
-            if(targetId === 'dashboard') renderDashboard();
-            if(targetId === 'notes') initNotesTab();
-            if(targetId === 'handover') renderHandover();
-            if(targetId === 'staff') renderStaffTable();
+        // Navigasi Tab
+        function gantiTab(tabId) {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('border-sky-600', 'text-sky-600', 'font-semibold');
+                btn.classList.add('border-transparent', 'text-slate-500', 'font-medium');
+            });
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            activeBtn.classList.remove('border-transparent', 'text-slate-500', 'font-medium');
+            activeBtn.classList.add('border-sky-600', 'text-sky-600', 'font-semibold');
+
+            if(tabId === 'dashboard') renderDashboard();
+            if(tabId === 'catatan') initCatatanDropdown();
+            if(tabId === 'handover') renderHandover();
+            if(tabId === 'tugas') initTugasDropdown();
+            if(tabId === 'petugas') renderListPetugas();
         }
 
-        // --- MOBILE MENU TOGGLE ---
-        document.getElementById('mobile-menu-toggle').addEventListener('click', () => {
-            const sidebar = document.querySelector('aside');
-            sidebar.classList.toggle('-translate-x-full');
-        });
-
-        // --- INITIALIZATION ---
-        window.onload = function() {
-            // Set current date string
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('current-date').innerText = new Date().toLocaleDateString('id-ID', options);
-            
-            renderDashboard();
-            populateDropdowns();
-            initNotesTab();
-            renderHandover();
-            renderStaffTable();
-        };
-
-        // --- RENDER DASHBOARD ---
+        // Render Dashboard
         function renderDashboard() {
-            document.getElementById('stat-total-patients').innerText = appState.patients.length;
-
-            // Penjamin stats badges
-            const counts = {};
-            appState.patients.forEach(p => {
-                counts[p.insurance] = (counts[p.insurance] || 0) + 1;
+            const filterDpjp = document.getElementById('filter-dpjp').value;
+            const keyword = document.getElementById('cari-pasien').value.toLowerCase();
+            
+            // Update Statistik
+            document.getElementById('stat-total-pasien').innerText = dataPasien.length;
+            document.getElementById('stat-total-tugas').innerText = dataTugasGlobal.filter(t => !t.selesai).length;
+            
+            // Hitung jumlah pasien berdasarkan penjamin
+            let penjaminCount = {};
+            dataPasien.forEach(p => {
+                if(p.penjamin) {
+                    penjaminCount[p.penjamin] = (penjaminCount[p.penjamin] || 0) + 1;
+                }
             });
-            const badgeColors = { 'BPJS': 'bg-emerald-100 text-emerald-700', 'Umum': 'bg-sky-100 text-sky-700', 'POLRI': 'bg-indigo-100 text-indigo-700', 'Keluarga': 'bg-amber-100 text-amber-700', 'Asuransi': 'bg-purple-100 text-purple-700' };
-            
-            let badgeHtml = '';
-            for(let [ins, count] of Object.entries(counts)) {
-                let colorClass = badgeColors[ins] || 'bg-slate-100 text-slate-700';
-                badgeHtml += `<span class="px-2.5 py-1 rounded-lg text-xs font-semibold ${colorClass}">${ins}: ${count}</span>`;
-            }
-            document.getElementById('stat-penjamin-badges').innerHTML = badgeHtml || '<span class="text-xs text-slate-400">Belum ada data</span>';
 
-            // Filter DPJP Options
-            let dpjpSelect = document.getElementById('filter-dpjp');
-            let currentFilter = dpjpSelect.value;
-            let doctors = appState.staff.filter(s => s.role === 'Dokter');
-            
-            let dpjpHtml = '<option value="">Semua DPJP (Dokter)</option>';
-            doctors.forEach(d => {
-                dpjpHtml += `<option value="${d.name}" ${currentFilter === d.name ? 'selected' : ''}>${d.name}</option>`;
+            let penjaminTextArr = [];
+            for (let penjamin in penjaminCount) {
+                penjaminTextArr.push(`${penjamin} ${penjaminCount[penjamin]}`);
+            }
+            document.getElementById('stat-penjamin').innerText = penjaminTextArr.length > 0 ? penjaminTextArr.join(', ') : 'Tidak ada pasien';
+
+            // Populate Filter DPJP
+            let dokterList = dataPetugas.filter(p => p.peran === 'Dokter');
+            let selectFilter = document.getElementById('filter-dpjp');
+            let currentVal = selectFilter.value;
+            selectFilter.innerHTML = '<option value="">Semua DPJP</option>';
+            dokterList.forEach(d => {
+                selectFilter.innerHTML += `<option value="${d.nama}">${d.nama}</option>`;
             });
-            dpjpSelect.innerHTML = dpjpHtml;
+            selectFilter.value = currentVal;
 
-            filterPatients();
-        }
+            // Render Kotak Pasien dengan Desain Menarik & Sentuhan Gold untuk VVIP 1-4
+            let grid = document.getElementById('grid-pasien');
+            grid.innerHTML = '';
 
-        function filterPatients() {
-            const filterVal = document.getElementById('filter-dpjp').value;
-            const grid = document.getElementById('patient-grid');
-            
-            let filtered = appState.patients;
-            if(filterVal) {
-                filtered = appState.patients.filter(p => p.dpjp === filterVal || (p.extraDpjp && p.extraDpjp.includes(filterVal)));
-            }
+            let filtered = dataPasien.filter(p => {
+                let matchDpjp = filterDpjp === "" || p.dpjp.includes(filterDpjp);
+                let matchKeyword = p.nama.toLowerCase().includes(keyword) || p.rm.includes(keyword) || p.ruangan.toLowerCase().includes(keyword);
+                return matchDpjp && matchKeyword;
+            });
 
             if(filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-2 bg-white p-8 rounded-2xl border border-sky-100 text-center text-slate-400 text-sm">Tidak ada pasien ditemukan untuk filter ini.</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-sm bg-white rounded-2xl border border-sky-100 shadow-sm">Tidak ada data pasien yang sesuai.</div>`;
                 return;
             }
 
-            let html = '';
             filtered.forEach(p => {
-                let extraBadges = '';
-                if(p.extraDpjp && p.extraDpjp.length > 0) {
-                    p.extraDpjp.forEach(ed => {
-                        extraBadges += `<span class="inline-flex items-center bg-sky-50 text-sky-700 text-[11px] font-medium px-2 py-0.5 rounded-md border border-sky-200 mt-1 mr-1"><i class="fa-solid fa-user-doctor text-[10px] mr-1"></i> ${ed}</span>`;
-                    });
-                }
+                let isVVIPGold = ["VVIP 1", "VVIP 2", "VVIP 3", "VVIP 4"].includes(p.ruangan);
+                
+                let dpjpTags = p.dpjp.map(d => `<span class="${isVVIPGold ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-sky-50 text-sky-700 border-sky-200/60'} text-xs font-medium px-2.5 py-1 rounded-md border shadow-2xs">${d}</span>`).join(' ');
+                
+                // Warna badge penjamin
+                let warnaPenjamin = "bg-slate-100 text-slate-700 border-slate-200";
+                if(p.penjamin === 'BPJS') warnaPenjamin = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                if(p.penjamin === 'POLRI') warnaPenjamin = "bg-blue-50 text-blue-700 border-blue-200";
+                if(p.penjamin === 'Umum') warnaPenjamin = "bg-amber-50 text-amber-700 border-amber-200";
+                if(p.penjamin === 'Asuransi') warnaPenjamin = "bg-purple-50 text-purple-700 border-purple-200";
+                if(p.penjamin === 'Keluarga') warnaPenjamin = "bg-rose-50 text-rose-700 border-rose-200";
 
-                html += `
-                <div class="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm hover:shadow-md transition flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-start justify-between mb-3">
-                            <div>
-                                <span class="bg-sky-100 text-sky-700 text-[11px] font-bold px-2.5 py-1 rounded-lg">${p.room}</span>
-                                <span class="bg-slate-100 text-slate-600 text-[11px] font-semibold px-2.5 py-1 rounded-lg ml-1">RM: ${p.rm}</span>
-                            </div>
-                            <span class="bg-emerald-50 text-emerald-700 text-[11px] font-bold px-2.5 py-1 rounded-lg border border-emerald-100">${p.insurance}</span>
-                        </div>
-                        <h4 class="font-bold text-slate-800 text-base">${p.name} <span class="text-xs font-normal text-slate-400">(${p.age} Thn)</span></h4>
-                        <p class="text-xs text-slate-600 mt-1 bg-sky-50/50 p-2.5 rounded-xl border border-sky-100"><strong>Diagnosa:</strong> ${p.diag}</p>
+                let fileListHTML = p.fileMedis.map((f, idx) => `
+                    <div class="flex items-center justify-between ${isVVIPGold ? 'bg-amber-50/40 hover:bg-amber-50 border-amber-200/60' : 'bg-sky-50/50 hover:bg-sky-50 border-sky-100'} px-2.5 py-1.5 rounded-lg text-xs border transition">
+                        <span class="truncate max-w-[130px] cursor-pointer ${isVVIPGold ? 'text-amber-800' : 'text-sky-700'} font-medium hover:underline flex items-center" onclick="bukaLightbox('${f.url}')">
+                            <i class="fa-solid fa-file-medical mr-1.5 ${isVVIPGold ? 'text-amber-600' : 'text-sky-500'}"></i>${f.nama}
+                        </span>
+                        <button onclick="hapusFile(${p.id}, ${idx})" class="text-rose-400 hover:text-rose-600 p-1"><i class="fa-solid fa-trash text-xs"></i></button>
+                    </div>
+                `).join('');
+
+                let cardClass = isVVIPGold 
+                    ? "bg-gradient-to-b from-amber-50/50 via-white to-white rounded-2xl shadow-lg hover:shadow-2xl border-2 border-amber-400/80 overflow-hidden flex flex-col justify-between transition-all duration-300 transform hover:-translate-y-1"
+                    : "bg-white rounded-2xl shadow-md hover:shadow-xl border border-sky-100/80 overflow-hidden flex flex-col justify-between transition-all duration-300 transform hover:-translate-y-1";
+
+                let headerClass = isVVIPGold
+                    ? "bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 px-4 py-3 text-white flex justify-between items-center shadow-md"
+                    : "bg-gradient-to-r from-sky-500 to-sky-600 px-4 py-3 text-white flex justify-between items-center shadow-inner";
+
+                grid.innerHTML += `
+                    <div class="${cardClass}">
                         
-                        <div class="mt-3">
-                            <p class="text-[11px] text-slate-400 font-semibold uppercase">DPJP Utama:</p>
-                            <p class="text-xs font-medium text-slate-700"><i class="fa-solid fa-stethoscope text-sky-500 mr-1"></i> ${p.dpjp}</p>
-                            ${extraBadges}
-                        </div>
-                    </div>
-
-                    <div class="mt-4 pt-3 border-t border-sky-50 flex items-center justify-between">
-                        <button onclick="openAddDpjpModal(${p.id})" class="text-xs font-semibold text-sky-600 hover:text-sky-700 bg-sky-50 hover:bg-sky-100 px-3 py-1.5 rounded-xl transition flex items-center space-x-1">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>Tambah DPJP</span>
-                        </button>
-                        <button onclick="selectPatientAndSwitch(${p.id}, 'notes')" class="text-xs font-semibold text-white bg-sky-500 hover:bg-sky-600 px-3.5 py-1.5 rounded-xl transition shadow-sm">
-                            <span>Catat TTV & Medis</span> <i class="fa-solid fa-arrow-right ml-1"></i>
-                        </button>
-                    </div>
-                </div>`;
-            });
-            grid.innerHTML = html;
-        }
-
-        function selectPatientAndSwitch(id, tab) {
-            appState.selectedPatientId = id;
-            switchTab(tab);
-            document.getElementById('select-note-patient').value = id;
-            loadPatientNotes();
-        }
-
-        // --- POPULATE DROPDOWNS ---
-        function populateDropdowns() {
-            let doctors = appState.staff.filter(s => s.role === 'Dokter');
-            let nurses = appState.staff.filter(s => s.role === 'Perawat');
-
-            // Add patient modal DPJP
-            let pDpjp = document.getElementById('p-dpjp');
-            if(pDpjp) {
-                pDpjp.innerHTML = doctors.map(d => `<option value="${d.name}">${d.name} (${d.spec})</option>`).join('');
-            }
-
-            // Extra DPJP modal
-            let extraDoc = document.getElementById('select-extra-doctor');
-            if(extraDoc) {
-                extraDoc.innerHTML = doctors.map(d => `<option value="${d.name}">${d.name} (${d.spec})</option>`).join('');
-            }
-
-            // Note patient selector
-            let notePat = document.getElementById('select-note-patient');
-            if(notePat) {
-                notePat.innerHTML = appState.patients.map(p => `<option value="${p.id}">${p.room} - ${p.name} (RM: ${p.rm})</option>`).join('');
-            }
-
-            // Handover selectors
-            let g = document.getElementById('handover-giver');
-            let r = document.getElementById('handover-receiver');
-            let doc = document.getElementById('handover-doctor');
-            if(g && r && doc) {
-                g.innerHTML = nurses.map(n => `<option value="${n.name}">${n.name}</option>`).join('');
-                r.innerHTML = nurses.map(n => `<option value="${n.name}">${n.name}</option>`).join('');
-                doc.innerHTML = doctors.map(d => `<option value="${d.name}">${d.name}</option>`).join('');
-            }
-        }
-
-        // --- TAB 2: NOTES & EXAMS ---
-        function initNotesTab() {
-            populateDropdowns();
-            if(appState.selectedPatientId) {
-                document.getElementById('select-note-patient').value = appState.selectedPatientId;
-            }
-            loadPatientNotes();
-        }
-
-        function loadPatientNotes() {
-            const patId = parseInt(document.getElementById('select-note-patient').value);
-            appState.selectedPatientId = patId;
-            const patient = appState.patients.find(p => p.id === patId);
-            if(!patient) return;
-
-            // Load TTV fields
-            if(patient.ttv) {
-                document.getElementById('ttv-td').value = patient.ttv.td || '';
-                document.getElementById('ttv-nadi').value = patient.ttv.nadi || '';
-                document.getElementById('ttv-suhu').value = patient.ttv.suhu || '';
-                document.getElementById('ttv-rr').value = patient.ttv.rr || '';
-                document.getElementById('ttv-spo2').value = patient.ttv.spo2 || '';
-                document.getElementById('ttv-nyeri').value = patient.ttv.nyeri || '';
-            }
-
-            // Load Nursing Notes
-            let notesContainer = document.getElementById('notes-list-container');
-            if(patient.notes && patient.notes.length > 0) {
-                let notesHtml = '';
-                patient.notes.forEach(n => {
-                    notesHtml += `
-                    <div class="bg-sky-50/40 p-4 rounded-xl border border-sky-100 flex flex-col space-y-2">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="font-bold text-sky-800"><i class="fa-regular fa-clock mr-1"></i> ${n.time}</span>
-                            <button onclick="openEditNoteModal(${n.id})" class="text-sky-600 hover:text-sky-800 font-semibold px-2 py-1 rounded bg-white border border-sky-200 transition">
-                                <i class="fa-solid fa-pen mr-1"></i> Edit
-                            </button>
-                        </div>
-                        <p class="text-xs text-slate-700 whitespace-pre-line leading-relaxed">${n.content}</p>
-                    </div>`;
-                });
-                notesContainer.innerHTML = notesHtml;
-            } else {
-                notesContainer.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-4">Belum ada catatan perawat untuk pasien ini.</p>`;
-            }
-
-            // Load Exam Files
-            let filesGrid = document.getElementById('exam-files-grid');
-            if(patient.files && patient.files.length > 0) {
-                let fileHtml = '';
-                patient.files.forEach(f => {
-                    fileHtml += `
-                    <div class="flex items-center justify-between bg-sky-50/60 p-3 rounded-xl border border-sky-100">
-                        <div class="flex items-center space-x-3 overflow-hidden">
-                            <div class="w-10 h-10 bg-sky-200 rounded-lg flex items-center justify-center text-sky-700 shrink-0 font-bold text-xs">
-                                ${f.type}
+                        <!-- Header Kotak Pasien -->
+                        <div class="${headerClass}">
+                            <div class="flex items-center space-x-2">
+                                <div class="bg-white/20 p-1.5 rounded-lg">
+                                    <i class="fa-solid ${isVVIPGold ? 'fa-crown text-amber-100' : 'fa-bed'} text-sm"></i>
+                                </div>
+                                <span class="font-bold tracking-wide text-sm">Kamar ${p.ruangan}</span>
                             </div>
-                            <div class="overflow-hidden">
-                                <p class="text-xs font-semibold text-slate-700 truncate">${f.name}</p>
-                                <p class="text-[10px] text-slate-400">Tersimpan di Sistem</p>
+                            <span class="text-xs font-semibold px-2.5 py-1 rounded-full border ${warnaPenjamin} bg-white shadow-xs">${p.penjamin}</span>
+                        </div>
+
+                        <!-- Isi Detail Pasien -->
+                        <div class="p-4 space-y-3 flex-grow">
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-base leading-tight">${p.nama}</h4>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md"><i class="fa-solid fa-cake-candles mr-1 ${isVVIPGold ? 'text-amber-500' : 'text-sky-500'}"></i>${p.umur} Thn</span>
+                                    <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md"><i class="fa-solid fa-id-card mr-1 ${isVVIPGold ? 'text-amber-500' : 'text-sky-500'}"></i>RM: ${p.rm}</span>
+                                </div>
+                            </div>
+
+                            <div class="text-xs ${isVVIPGold ? 'bg-amber-50/60 border-amber-200/80' : 'bg-sky-50/60 border-sky-100'} p-2.5 rounded-xl border">
+                                <span class="font-semibold ${isVVIPGold ? 'text-amber-900' : 'text-sky-900'} block mb-0.5 flex items-center"><i class="fa-solid fa-stethoscope mr-1.5 ${isVVIPGold ? 'text-amber-600' : 'text-sky-600'}"></i>Diagnosa Medis:</span>
+                                <p class="text-slate-700 leading-relaxed">${p.diagnosa}</p>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-center text-xs">
+                                    <span class="font-semibold text-slate-600 flex items-center"><i class="fa-solid fa-user-doctor mr-1 ${isVVIPGold ? 'text-amber-600' : 'text-sky-600'}"></i>DPJP:</span>
+                                    <button onclick="bukaModalTambahDpjp(${p.id})" class="${isVVIPGold ? 'text-amber-700 bg-amber-50 hover:bg-amber-100' : 'text-sky-600 bg-sky-50 hover:bg-sky-100'} text-xs font-bold px-2 py-0.5 rounded-md transition flex items-center">
+                                        <i class="fa-solid fa-plus mr-1"></i>Tambah DPJP
+                                    </button>
+                                </div>
+                                <div class="flex flex-wrap gap-1.5 pt-0.5">${dpjpTags}</div>
                             </div>
                         </div>
-                        <button onclick="openFullscreen('${f.url}', '${f.name}')" class="bg-white hover:bg-sky-500 hover:text-white text-sky-600 border border-sky-200 text-xs font-medium px-3 py-1.5 rounded-lg transition shrink-0">
-                            <i class="fa-solid fa-expand mr-1"></i> Full Layar
-                        </button>
-                    </div>`;
-                });
-                filesGrid.innerHTML = fileHtml;
-            } else {
-                filesGrid.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-4">Belum ada file hasil pemeriksaan.</p>`;
+
+                        <!-- Bagian Upload & Tombol Aksi Pasien Pulang -->
+                        <div class="${isVVIPGold ? 'bg-amber-50/30 border-amber-200/60' : 'bg-slate-50/70 border-sky-100'} p-3.5 border-t space-y-2">
+                            <p class="text-xs font-semibold text-slate-600 flex items-center justify-between">
+                                <span><i class="fa-solid fa-folder-open mr-1.5 ${isVVIPGold ? 'text-amber-500' : 'text-sky-500'}"></i>Hasil Pemeriksaan:</span>
+                                <span class="text-[10px] text-slate-400 font-normal">EKG / Lab / Radiologi</span>
+                            </p>
+                            ${p.fileMedis.length > 0 ? `<div class="grid grid-cols-1 gap-1.5 max-h-28 overflow-y-auto">${fileListHTML}</div>` : `<p class="text-[11px] text-slate-400 italic">Belum ada file diunggah.</p>`}
+                            
+                            <div class="flex space-x-2 pt-1">
+                                <label class="flex-1 bg-white hover:${isVVIPGold ? 'bg-amber-50 text-amber-800 border-amber-300' : 'bg-sky-50 text-sky-700 border-sky-200'} text-center py-1.5 px-2.5 rounded-xl text-xs font-semibold cursor-pointer border shadow-2xs transition flex items-center justify-center space-x-1">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <span>Upload</span>
+                                    <input type="file" onchange="uploadFilePasien(event, ${p.id})" class="hidden" accept="image/*,.pdf">
+                                </label>
+                                <button onclick="triggerKamera(${p.id})" class="flex-1 ${isVVIPGold ? 'bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white shadow-amber-200' : 'bg-sky-600 hover:bg-sky-700 text-white'} py-1.5 px-2.5 rounded-xl text-xs font-semibold shadow-xs transition flex items-center justify-center space-x-1">
+                                    <i class="fa-solid fa-camera"></i>
+                                    <span>Foto</span>
+                                </button>
+                            </div>
+
+                            <!-- Tombol Pulang / Checkout Pasien -->
+                            <div class="pt-1">
+                                <button onclick="pulangkanPasien(${p.id})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-3 rounded-xl text-xs font-bold shadow-xs transition flex items-center justify-center space-x-1.5">
+                                    <i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
+                                    <span>Pasien Pulang / Selesai Perawatan</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                `;
+            });
+        }
+
+        // Fungsi Memulangkan Pasien
+        function pulangkanPasien(idPasien) {
+            let pasien = dataPasien.find(p => p.id === idPasien);
+            if(confirm(`Apakah Anda yakin pasien ${pasien.nama} (Kamar ${pasien.ruangan}) sudah diperbolehkan pulang / selesai perawatan?`)) {
+                dataPasien = dataPasien.filter(p => p.id !== idPasien);
+                dataTugasGlobal = dataTugasGlobal.filter(t => t.pasienId !== idPasien);
+                renderDashboard();
+                alert(`Pasien ${pasien.nama} berhasil dipulangkan dari sistem.`);
             }
         }
 
-        function saveTTV(e) {
-            e.preventDefault();
-            const patient = appState.patients.find(p => p.id === appState.selectedPatientId);
-            if(!patient) return;
-
-            patient.ttv = {
-                td: document.getElementById('ttv-td').value,
-                nadi: document.getElementById('ttv-nadi').value,
-                suhu: document.getElementById('ttv-suhu').value,
-                rr: document.getElementById('ttv-rr').value,
-                spo2: document.getElementById('ttv-spo2').value,
-                nyeri: document.getElementById('ttv-nyeri').value
-            };
-
-            showToast("Tanda-Tanda Vital berhasil diperbarui!");
-            loadPatientNotes();
-        }
-
-        function openNoteModal() {
-            document.getElementById('note-id').value = '';
-            document.getElementById('note-modal-title').innerHTML = '<i class="fa-solid fa-pen-to-square mr-2"></i> Tambah Catatan Perawat';
-            document.getElementById('note-time').value = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
-            document.getElementById('note-content').value = '';
-            document.getElementById('modal-note').classList.remove('hidden');
-        }
-
-        function openEditNoteModal(noteId) {
-            const patient = appState.patients.find(p => p.id === appState.selectedPatientId);
-            const note = patient.notes.find(n => n.id === noteId);
-            if(!note) return;
-
-            document.getElementById('note-id').value = note.id;
-            document.getElementById('note-modal-title').innerHTML = '<i class="fa-solid fa-pen-to-square mr-2"></i> Edit Catatan Perawat';
-            document.getElementById('note-time').value = note.time;
-            document.getElementById('note-content').value = note.content;
-            document.getElementById('modal-note').classList.remove('hidden');
-        }
-
-        function saveNursingNote(e) {
-            e.preventDefault();
-            const patient = appState.patients.find(p => p.id === appState.selectedPatientId);
-            const noteId = document.getElementById('note-id').value;
-            const content = document.getElementById('note-content').value;
-            const timeStr = document.getElementById('note-time').value;
-
-            if(noteId) {
-                let note = patient.notes.find(n => n.id == noteId);
-                if(note) note.content = content;
-                showToast("Catatan berhasil diperbarui!");
-            } else {
-                const newNote = {
-                    id: Date.now(),
-                    time: timeStr + " (Shift Aktif)",
-                    content: content
-                };
-                patient.notes.unshift(newNote);
-                showToast("Catatan baru berhasil ditambahkan!");
+        // Modal Tambah DPJP dengan Dropdown Dokter
+        function bukaModalTambahDpjp(idPasien) {
+            let dokterList = dataPetugas.filter(p => p.peran === 'Dokter');
+            let select = document.getElementById('select-pilih-dokter');
+            
+            if(dokterList.length === 0) {
+                alert("Belum ada data dokter terdaftar. Silakan daftarkan dokter terlebih dahulu di menu 'Tambah Petugas'.");
+                return;
             }
 
-            closeModal('modal-note');
-            loadPatientNotes();
+            select.innerHTML = dokterList.map(d => `<option value="${d.nama}">${d.nama} (${d.info})</option>`).join('');
+            document.getElementById('current-pasien-id-dpjp').value = idPasien;
+            document.getElementById('modal-dpjp').classList.remove('hidden');
         }
 
-        function handleFileUpload(e) {
-            const file = e.target.files[0];
-            if(!file) return;
-
-            const patient = appState.patients.find(p => p.id === appState.selectedPatientId);
-            const reader = new FileReader();
-            reader.onload = function(uploadEvent) {
-                patient.files.push({
-                    id: Date.now(),
-                    name: file.name,
-                    type: "Lab/Rad",
-                    url: uploadEvent.target.result
-                });
-                showToast("File hasil pemeriksaan berhasil diunggah!");
-                loadPatientNotes();
-            };
-            reader.readAsDataURL(file);
+        function tutupModalDpjp() {
+            document.getElementById('modal-dpjp').classList.add('hidden');
         }
 
-        function openFullscreen(url, filename) {
-            document.getElementById('fullscreen-img').src = url;
-            document.getElementById('fullscreen-filename').innerText = filename;
-            document.getElementById('modal-fullscreen').classList.remove('hidden');
-        }
+        function simpanDpjpBaru() {
+            let pasienId = parseInt(document.getElementById('current-pasien-id-dpjp').value);
+            let dokterTerpilih = document.getElementById('select-pilih-dokter').value;
+            let pasien = dataPasien.find(p => p.id === pasienId);
 
-        function closeFullscreen() {
-            document.getElementById('modal-fullscreen').classList.add('hidden');
-        }
-
-        // --- TAB 3: HAND OVER ---
-        function renderHandover() {
-            let tbody = document.getElementById('handover-table-body');
-            let html = '';
-            appState.patients.forEach(p => {
-                let ttvStr = p.ttv ? `TD: ${p.ttv.td}, N: ${p.ttv.nadi}, S: ${p.ttv.suhu}` : 'Belum ada TTV';
-                html += `
-                <tr class="hover:bg-sky-50/50">
-                    <td class="p-3 font-semibold text-slate-800">${p.room}<br><span class="font-normal text-slate-400">RM: ${p.rm}</span></td>
-                    <td class="p-3 font-bold text-slate-800">${p.name}</td>
-                    <td class="p-3 text-slate-600">${p.diag}</td>
-                    <td class="p-3 text-slate-600">${ttvStr}</td>
-                    <td class="p-3 font-medium text-amber-700 bg-amber-50/50 rounded-lg">${p.pendingAction || 'Tidak ada tindakan tertunda'}</td>
-                </tr>`;
-            });
-            tbody.innerHTML = html;
-
-            // Update signature labels on select change
-            document.getElementById('handover-giver').addEventListener('change', (e) => {
-                document.getElementById('sign-giver').innerText = `(${e.target.value})`;
-            });
-            document.getElementById('handover-receiver').addEventListener('change', (e) => {
-                document.getElementById('sign-receiver').innerText = `(${e.target.value})`;
-            });
-        }
-
-        // --- TAB 4: STAFF MANAGEMENT ---
-        function renderStaffTable() {
-            let tbody = document.getElementById('staff-table-body');
-            let html = '';
-            appState.staff.forEach(s => {
-                html += `
-                <tr class="hover:bg-sky-50/50">
-                    <td class="p-3 font-bold text-slate-800">${s.name}</td>
-                    <td class="p-3"><span class="px-2.5 py-1 rounded-lg text-xs font-semibold ${s.role === 'Dokter' ? 'bg-sky-100 text-sky-700' : 'bg-emerald-100 text-emerald-700'}">${s.role}</span></td>
-                    <td class="p-3 text-slate-600">${s.spec}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="deleteStaff(${s.id})" class="text-red-500 hover:text-red-700 text-xs font-semibold px-2 py-1 rounded bg-red-50 transition"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>`;
-            });
-            tbody.innerHTML = html;
-        }
-
-        function saveStaff(e) {
-            e.preventDefault();
-            const name = document.getElementById('staff-name').value;
-            const role = document.getElementById('staff-role').value;
-            const spec = document.getElementById('staff-spec').value;
-
-            appState.staff.push({
-                id: Date.now(),
-                name: name,
-                role: role,
-                spec: spec
-            });
-
-            showToast("Petugas baru berhasil didaftarkan!");
-            document.getElementById('form-staff').reset();
-            renderStaffTable();
-            populateDropdowns();
-        }
-
-        function deleteStaff(id) {
-            if(confirm("Yakin ingin menghapus petugas ini dari sistem?")) {
-                appState.staff = appState.staff.filter(s => s.id !== id);
-                renderStaffTable();
-                populateDropdowns();
-                showToast("Petugas berhasil dihapus.");
-            }
-        }
-
-        // --- PATIENT & DPJP MODAL ACTIONS ---
-        function savePatient(e) {
-            e.preventDefault();
-            const newPatient = {
-                id: Date.now(),
-                name: document.getElementById('p-name').value,
-                rm: document.getElementById('p-rm').value,
-                age: parseInt(document.getElementById('p-age').value),
-                room: document.getElementById('p-room').value,
-                diag: document.getElementById('p-diag').value,
-                insurance: document.getElementById('p-insurance').value,
-                dpjp: document.getElementById('p-dpjp').value,
-                extraDpjp: [],
-                ttv: { td: "120/80 mmHg", nadi: "80 x/m", suhu: "36.5 °C", rr: "20 x/m", spo2: "98%", nyeri: "Skala 0" },
-                notes: [{ id: 1, time: "Hari ini", content: "Pasien baru masuk rawat inap." }],
-                files: [],
-                pendingAction: "Pemeriksaan awal & anamnesa lengkap."
-            };
-
-            appState.patients.push(newPatient);
-            closeModal('modal-add-patient');
-            document.getElementById('form-patient').reset();
-            renderDashboard();
-            populateDropdowns();
-            showToast("Pasien baru berhasil ditambahkan!");
-        }
-
-        function openAddDpjpModal(patientId) {
-            document.getElementById('dpjp-patient-id').value = patientId;
-            document.getElementById('modal-add-dpjp').classList.remove('hidden');
-        }
-
-        function saveExtraDPJP(e) {
-            e.preventDefault();
-            const patId = parseInt(document.getElementById('dpjp-patient-id').value);
-            const docName = document.getElementById('select-extra-doctor').value;
-            const patient = appState.patients.find(p => p.id === patId);
-
-            if(patient) {
-                if(!patient.extraDpjp) patient.extraDpjp = [];
-                if(!patient.extraDpjp.includes(docName) && patient.dpjp !== docName) {
-                    patient.extraDpjp.push(docName);
-                    showToast("Dokter DPJP tambahan berhasil ditambahkan!");
+            if(pasien && dokterTerpilih) {
+                if(!pasien.dpjp.includes(dokterTerpilih)) {
+                    pasien.dpjp.push(dokterTerpilih);
+                    tutupModalDpjp();
+                    renderDashboard();
+                    alert("DPJP berhasil ditambahkan!");
                 } else {
-                    showToast("Dokter tersebut sudah terdaftar pada pasien ini.");
+                    alert("Dokter tersebut sudah terdaftar sebagai DPJP pasien ini.");
                 }
             }
-            closeModal('modal-add-dpjp');
+        }
+
+        // Modal Pasien Baru
+        function bukaModalPasienBaru() {
+            let dokterList = dataPetugas.filter(p => p.peran === 'Dokter');
+            let select = document.getElementById('modal-dpjp');
+            select.innerHTML = dokterList.map(d => `<option value="${d.nama}">${d.nama}</option>`).join('');
+            document.getElementById('modal-pasien').classList.remove('hidden');
+        }
+        function tutupModalPasienBaru() {
+            document.getElementById('modal-pasien').classList.add('hidden');
+        }
+        function simpanPasienBaru() {
+            let nama = document.getElementById('modal-nama').value;
+            let umur = document.getElementById('modal-umur').value;
+            let rm = document.getElementById('modal-rm').value;
+            let ruangan = document.getElementById('modal-ruangan').value;
+            let penjamin = document.getElementById('modal-penjamin').value;
+            let diagnosa = document.getElementById('modal-diagnosa').value;
+            let dpjp = document.getElementById('modal-dpjp').value;
+
+            if(!nama || !rm) {
+                alert("Mohon isi nama dan No. RM pasien dengan lengkap!");
+                return;
+            }
+
+            dataPasien.push({
+                id: Date.now(),
+                nama, umur: parseInt(umur) || 0, rm, ruangan, diagnosa, penjamin,
+                dpjp: [dpjp],
+                catatan: [],
+                fileMedis: []
+            });
+
+            tutupModalPasienBaru();
             renderDashboard();
         }
 
-        // --- UTILS ---
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.remove('hidden');
+        // Upload & Kamera File
+        function uploadFilePasien(event, pasienId) {
+            let file = event.target.files[0];
+            if(file) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let pasien = dataPasien.find(p => p.id === pasienId);
+                    pasien.fileMedis.push({ nama: file.name, url: e.target.result });
+                    renderDashboard();
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+        function triggerKamera(pasienId) {
+            let input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.capture = 'environment';
+            input.onchange = (e) => {
+                let file = e.target.files[0];
+                if(file) {
+                    let reader = new FileReader();
+                    reader.onload = function(evt) {
+                        let pasien = dataPasien.find(p => p.id === pasienId);
+                        pasien.fileMedis.push({ nama: `Foto_${Date.now()}.jpg`, url: evt.target.result });
+                        renderDashboard();
+                    }
+                    reader.readAsDataURL(file);
+                }
+            };
+            input.click();
+        }
+        function hapusFile(pasienId, fileIdx) {
+            let pasien = dataPasien.find(p => p.id === pasienId);
+            pasien.fileMedis.splice(fileIdx, 1);
+            renderDashboard();
+        }
+        function bukaLightbox(url) {
+            document.getElementById('lightbox-img').src = url;
+            document.getElementById('modal-lightbox').classList.remove('hidden');
+        }
+        function tutupLightbox() {
+            document.getElementById('modal-lightbox').classList.add('hidden');
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
+        // ================= BAGIAN CATATAN & TTV =================
+        function initCatatanDropdown() {
+            let select = document.getElementById('catatan-select-pasien');
+            select.innerHTML = dataPasien.map(p => `<option value="${p.id}">${p.ruangan} - ${p.nama} (RM: ${p.rm})</option>`).join('');
+            muatCatatanPasien();
+        }
+        function muatCatatanPasien() {
+            let pasienId = parseInt(document.getElementById('catatan-select-pasien').value);
+            let pasien = dataPasien.find(p => p.id === pasienId);
+            let container = document.getElementById('container-riwayat-catatan');
+            
+            if(!pasien || pasien.catatan.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400">Belum ada catatan untuk pasien ini.</p>`;
+                return;
+            }
+
+            container.innerHTML = pasien.catatan.map((c, idx) => `
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm space-y-1">
+                    <div class="flex justify-between items-center text-xs text-slate-500">
+                        <span><i class="fa-solid fa-clock mr-1"></i>${c.waktu}</span>
+                        <span class="font-semibold text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">${c.ttd}</span>
+                    </div>
+                    <p class="text-slate-700 whitespace-pre-line text-sm">${c.teks}</p>
+                </div>
+            `).join('');
+        }
+        function tambahCatatanBaru() {
+            let pasienId = parseInt(document.getElementById('catatan-select-pasien').value);
+            let pasien = dataPasien.find(p => p.id === pasienId);
+            let td = document.getElementById('input-td').value || '-';
+            let nadi = document.getElementById('input-nadi').value || '-';
+            let suhu = document.getElementById('input-suhu').value || '-';
+            let spo2 = document.getElementById('input-spo2').value || '-';
+            let teks = document.getElementById('input-catatan-teks').value;
+
+            if(!teks) {
+                alert("Mohon isi catatan keperawatan terlebih dahulu!");
+                return;
+            }
+
+            let ttdStr = `TD: ${td}, N: ${nadi}, S: ${suhu}°C, SpO2: ${spo2}%`;
+            let now = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Makassar' });
+
+            pasien.catatan.unshift({ waktu: now, ttd: ttdStr, teks: teks });
+            
+            document.getElementById('input-td').value = '';
+            document.getElementById('input-nadi').value = '';
+            document.getElementById('input-suhu').value = '';
+            document.getElementById('input-spo2').value = '';
+            document.getElementById('input-catatan-teks').value = '';
+
+            muatCatatanPasien();
+            alert("Catatan berhasil disimpan!");
         }
 
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'fixed bottom-5 right-5 bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-2xl z-50 flex items-center space-x-2 animate-bounce';
-            toast.innerHTML = `<i class="fa-solid fa-circle-check text-sky-400"></i><span>${message}</span>`;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+        // ================= BAGIAN HAND OVER =================
+        function renderHandover() {
+            let perawatList = dataPetugas.filter(p => p.peran === 'Perawat');
+            let karuList = dataPetugas.filter(p => p.peran === 'Kepala Ruangan' || p.peran === 'Perawat');
+
+            let selectPemberi = document.getElementById('handover-pemberi');
+            let selectPenerima = document.getElementById('handover-penerima');
+            let selectKaru = document.getElementById('handover-karu');
+
+            selectPemberi.innerHTML = perawatList.map(p => `<option value="${p.nama}">${p.nama}</option>`).join('');
+            selectPenerima.innerHTML = perawatList.map(p => `<option value="${p.nama}">${p.nama}</option>`).join('');
+            selectKaru.innerHTML = karuList.map(k => `<option value="${k.nama}">${k.nama} (${k.peran})</option>`).join('');
+
+            // Sinkronisasi nama penandatangan untuk cetak
+            function updatePrintNames() {
+                document.getElementById('print-nama-pemberi').innerText = selectPemberi.value || '( ................................... )';
+                document.getElementById('print-nama-penerima').innerText = selectPenerima.value || '( ................................... )';
+                document.getElementById('print-nama-karu').innerText = selectKaru.value ? selectKaru.value.split(' (')[0] : '( ................................... )';
+            }
+            selectPemberi.onchange = updatePrintNames;
+            selectPenerima.onchange = updatePrintNames;
+            selectKaru.onchange = updatePrintNames;
+            updatePrintNames();
+
+            let tbody = document.getElementById('tabel-handover-body');
+            tbody.innerHTML = '';
+
+            dataPasien.forEach(p => {
+                let tugasBelum = dataTugasGlobal.filter(t => t.pasienId === p.id && !t.selesai).map(t => `- ${t.teks}`).join('<br>') || 'Tidak ada tindakan tertunda';
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-medium">${p.ruangan}<br><span class="text-xs text-slate-500 print:text-black">RM: ${p.rm}</span></td>
+                        <td class="p-3">${p.nama}<br><span class="text-xs text-slate-500 print:text-black">${p.umur} Thn</span></td>
+                        <td class="p-3">${p.diagnosa}<br><span class="text-xs bg-sky-50 text-sky-700 px-1.5 py-0.5 rounded print:bg-transparent print:p-0">${p.penjamin}</span></td>
+                        <td class="p-3 text-rose-600 text-xs font-medium print:text-black">${tugasBelum}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // ================= BAGIAN MANAJEMEN TUGAS =================
+        function initTugasDropdown() {
+            let select = document.getElementById('tugas-pasien');
+            select.innerHTML = dataPasien.map(p => `<option value="${p.id}">${p.ruangan} - ${p.nama}</option>`).join('');
+            renderDaftarTugas();
+        }
+        function tambahTugasBaru() {
+            let pasienId = parseInt(document.getElementById('tugas-pasien').value);
+            let pasien = dataPasien.find(p => p.id === pasienId);
+            let teksTugas = document.getElementById('tugas-deskripsi').value;
+
+            if(!teksTugas) {
+                alert("Mohon masukkan deskripsi tugas/rencana tindakan!");
+                return;
+            }
+
+            let tugasBaru = {
+                id: Date.now(),
+                pasienId: pasien.id,
+                pasienNama: pasien.nama,
+                teks: teksTugas,
+                selesai: false
+            };
+
+            dataTugasGlobal.push(tugasBaru);
+            document.getElementById('tugas-deskripsi').value = '';
+            renderDaftarTugas();
+            alert("Rencana tindakan berhasil ditambahkan!");
+        }
+        function toggleStatusTugas(id) {
+            let t = dataTugasGlobal.find(item => item.id === id);
+            if(t) {
+                t.selesai = !t.selesai;
+                renderDaftarTugas();
+            }
+        }
+        function hapusTugas(id) {
+            dataTugasGlobal = dataTugasGlobal.filter(item => item.id !== id);
+            renderDaftarTugas();
+        }
+        function renderDaftarTugas() {
+            let container = document.getElementById('container-daftar-tugas');
+            if(dataTugasGlobal.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400">Belum ada tugas atau rencana tindakan.</p>`;
+                return;
+            }
+
+            container.innerHTML = dataTugasGlobal.map(t => `
+                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <div class="flex items-center space-x-3">
+                        <input type="checkbox" ${t.selesai ? 'checked' : ''} onchange="toggleStatusTugas(${t.id})" class="w-4 h-4 text-sky-600 rounded cursor-pointer">
+                        <div>
+                            <p class="text-sm font-medium ${t.selesai ? 'line-through text-slate-400' : 'text-slate-800'}">${t.teks}</p>
+                            <span class="text-xs text-sky-600 font-medium">Pasien: ${t.pasienNama}</span>
+                        </div>
+                    </div>
+                    <button onclick="hapusTugas(${t.id})" class="text-rose-500 hover:text-rose-700 text-sm"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `).join('');
+        }
+
+        // ================= BAGIAN TAMBAH PETUGAS =================
+        function simpanPetugasBaru() {
+            let nama = document.getElementById('petugas-nama').value;
+            let peran = document.getElementById('petugas-peran').value;
+            let info = document.getElementById('petugas-info').value;
+
+            if(!nama) {
+                alert("Mohon masukkan nama petugas!");
+                return;
+            }
+
+            dataPetugas.push({ nama, peran, info });
+            document.getElementById('petugas-nama').value = '';
+            renderListPetugas();
+            alert("Petugas berhasil didaftarkan!");
+        }
+        function renderListPetugas() {
+            let container = document.getElementById('list-petugas-terdaftar');
+            container.innerHTML = dataPetugas.map(p => `
+                <div class="flex justify-between items-center bg-slate-50 p-2 rounded border text-xs">
+                    <div>
+                        <strong class="text-slate-800">${p.nama}</strong>
+                        <span class="text-slate-500 block">${p.peran} - ${p.info}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Inisialisasi awal saat halaman dimuat
+        window.onload = function() {
+            updateRealtimeClock();
+            renderDashboard();
         }
     </script>
 </body>
