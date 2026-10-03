@@ -19,14 +19,6 @@
                             700: '#0369a1',
                             800: '#075985',
                             900: '#0c4a6e',
-                        },
-                        gold: {
-                            50: '#fefce8',
-                            100: '#fef9c3',
-                            400: '#facc15',
-                            500: '#eab308',
-                            600: '#ca8a04',
-                            700: '#a16207',
                         }
                     }
                 }
@@ -76,12 +68,13 @@
 </head>
 <body class="bg-sky-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
 
-    <!-- Header / Navbar -->
+    <!-- Header / Navbar dengan Logo RS Bhayangkara Palu (Tanpa Frame / Menyatu) -->
     <header class="bg-sky-600 text-white shadow-md sticky top-0 z-40 print:hidden">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="bg-white text-sky-600 p-2 rounded-xl shadow">
-                    <i class="fa-solid fa-hospital-user text-xl"></i>
+                <!-- Logo Resmi RS Bhayangkara Palu tanpa background putih/frame -->
+                <div class="flex items-center justify-center w-11 h-11 shrink-0">
+                    <img src="https://i.ibb.co.com/F4zqsJQw/RSBP-removebg-preview.png" alt="Logo RS Bhayangkara" class="w-10 h-10 object-contain drop-shadow-sm" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1516549655169-df83a0774514?w=100';">
                 </div>
                 <div>
                     <h1 class="font-bold text-lg leading-tight">VVIP Bhara Daksa - RS Bhayangkara Palu</h1>
@@ -381,7 +374,7 @@
     </main>
 
     <!-- ================= MODAL TAMBAH PASIEN BARU ================= -->
-    <div id="modal-pasien" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div id="modal-pasien-baru" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3">
                 <h3 class="font-bold text-base text-slate-800"><i class="fa-solid fa-user-plus text-sky-600 mr-2"></i>Tambah Pasien Baru</h3>
@@ -437,7 +430,7 @@
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-slate-600 mb-1">DPJP Utama</label>
-                    <select id="modal-dpjp" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white"></select>
+                    <select id="modal-dpjp-utama" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white"></select>
                 </div>
             </div>
             <div class="flex justify-end space-x-2 pt-2 border-t">
@@ -447,8 +440,8 @@
         </div>
     </div>
 
-    <!-- ================= MODAL TAMBAH DPJP (DROPDOWN PILIH DOKTER) ================= -->
-    <div id="modal-dpjp" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <!-- ================= MODAL TAMBAH DPJP ================= -->
+    <div id="modal-tambah-dpjp" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-xl space-y-4">
             <div class="flex justify-between items-center border-b pb-2">
                 <h3 class="font-bold text-sm text-slate-800"><i class="fa-solid fa-user-doctor text-sky-600 mr-1.5"></i>Tambah DPJP Pasien</h3>
@@ -468,6 +461,38 @@
         </div>
     </div>
 
+    <!-- ================= MODAL UPLOAD / FOTO DENGAN KETERANGAN ================= -->
+    <div id="modal-upload-file" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl space-y-4">
+            <div class="flex justify-between items-center border-b pb-2">
+                <h3 class="font-bold text-sm text-slate-800"><i class="fa-solid fa-file-medical text-sky-600 mr-1.5"></i>Unggah Hasil Pemeriksaan</h3>
+                <button onclick="tutupModalUpload()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-base"></i></button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Kategori / Keterangan Pemeriksaan</label>
+                    <select id="upload-keterangan" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:outline-none focus:border-sky-500 font-semibold text-slate-700">
+                        <option value="EKG">EKG (Elektrokardiogram)</option>
+                        <option value="Laboratorium">Laboratorium (Lab)</option>
+                        <option value="Radiologi">Radiologi (Rontgen/USG/CT-Scan)</option>
+                        <option value="Resep / Terapi">Resep / Catatan Terapi</option>
+                        <option value="Lainnya">Lainnya / Umum</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Pilih File / Dokumen (PDF/Gambar)</label>
+                    <input type="file" id="upload-file-input" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white" accept="image/*,.pdf">
+                </div>
+                <input type="hidden" id="upload-pasien-id">
+                <input type="hidden" id="upload-metode-sumber">
+            </div>
+            <div class="flex justify-end space-x-2 pt-2 border-t">
+                <button onclick="tutupModalUpload()" class="px-3 py-1.5 border rounded-lg text-xs text-slate-600 hover:bg-slate-50">Batal</button>
+                <button onclick="prosesSimpanFile()" class="px-4 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-xs font-semibold shadow">Simpan & Unggah</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ================= MODAL FULL SCREEN GAMBAR / FILE ================= -->
     <div id="modal-lightbox" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
         <div class="relative max-w-4xl w-full flex flex-col items-center">
@@ -478,7 +503,6 @@
 
     <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
-        // Data Dummy Awal
         let dataPetugas = [
             { nama: "dr. Andi Wijaya, Sp.PD", peran: "Dokter", info: "Penyakit Dalam" },
             { nama: "dr. Siska Maharani, Sp.A", peran: "Dokter", info: "Anak" },
@@ -500,7 +524,9 @@
                 catatan: [
                     { waktu: "06/10/2026 08:00", ttd: "TD: 130/85, N: 84, S: 36.6, SpO2: 98%", teks: "S: Pasien mengeluh pusing berkurang. O: Kesadaran compos mentis. A: Tekanan darah stabil. P: Lanjutkan terapi oral." }
                 ],
-                fileMedis: [],
+                fileMedis: [
+                    { keterangan: "EKG", nama: "EKG_Awal.jpg", url: "https://via.placeholder.com/600x400.png?text=Contoh+Hasil+EKG" }
+                ],
                 tindakan: [
                     { id: 101, teks: "Cek Tensi Berkala jam 14.00", selesai: false }
                 ]
@@ -559,11 +585,9 @@
             const filterDpjp = document.getElementById('filter-dpjp').value;
             const keyword = document.getElementById('cari-pasien').value.toLowerCase();
             
-            // Update Statistik
             document.getElementById('stat-total-pasien').innerText = dataPasien.length;
             document.getElementById('stat-total-tugas').innerText = dataTugasGlobal.filter(t => !t.selesai).length;
             
-            // Hitung jumlah pasien berdasarkan penjamin
             let penjaminCount = {};
             dataPasien.forEach(p => {
                 if(p.penjamin) {
@@ -577,7 +601,6 @@
             }
             document.getElementById('stat-penjamin').innerText = penjaminTextArr.length > 0 ? penjaminTextArr.join(', ') : 'Tidak ada pasien';
 
-            // Populate Filter DPJP
             let dokterList = dataPetugas.filter(p => p.peran === 'Dokter');
             let selectFilter = document.getElementById('filter-dpjp');
             let currentVal = selectFilter.value;
@@ -587,7 +610,6 @@
             });
             selectFilter.value = currentVal;
 
-            // Render Kotak Pasien dengan Desain Menarik & Sentuhan Gold untuk VVIP 1-4
             let grid = document.getElementById('grid-pasien');
             grid.innerHTML = '';
 
@@ -604,10 +626,8 @@
 
             filtered.forEach(p => {
                 let isVVIPGold = ["VVIP 1", "VVIP 2", "VVIP 3", "VVIP 4"].includes(p.ruangan);
-                
                 let dpjpTags = p.dpjp.map(d => `<span class="${isVVIPGold ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-sky-50 text-sky-700 border-sky-200/60'} text-xs font-medium px-2.5 py-1 rounded-md border shadow-2xs">${d}</span>`).join(' ');
                 
-                // Warna badge penjamin
                 let warnaPenjamin = "bg-slate-100 text-slate-700 border-slate-200";
                 if(p.penjamin === 'BPJS') warnaPenjamin = "bg-emerald-50 text-emerald-700 border-emerald-200";
                 if(p.penjamin === 'POLRI') warnaPenjamin = "bg-blue-50 text-blue-700 border-blue-200";
@@ -617,8 +637,8 @@
 
                 let fileListHTML = p.fileMedis.map((f, idx) => `
                     <div class="flex items-center justify-between ${isVVIPGold ? 'bg-amber-50/40 hover:bg-amber-50 border-amber-200/60' : 'bg-sky-50/50 hover:bg-sky-50 border-sky-100'} px-2.5 py-1.5 rounded-lg text-xs border transition">
-                        <span class="truncate max-w-[130px] cursor-pointer ${isVVIPGold ? 'text-amber-800' : 'text-sky-700'} font-medium hover:underline flex items-center" onclick="bukaLightbox('${f.url}')">
-                            <i class="fa-solid fa-file-medical mr-1.5 ${isVVIPGold ? 'text-amber-600' : 'text-sky-500'}"></i>${f.nama}
+                        <span class="truncate max-w-[150px] cursor-pointer ${isVVIPGold ? 'text-amber-800' : 'text-sky-700'} font-medium hover:underline flex items-center" onclick="bukaLightbox('${f.url}')">
+                            <i class="fa-solid fa-file-medical mr-1.5 ${isVVIPGold ? 'text-amber-600' : 'text-sky-500'}"></i><strong>[${f.keterangan}]</strong>&nbsp;${f.nama}
                         </span>
                         <button onclick="hapusFile(${p.id}, ${idx})" class="text-rose-400 hover:text-rose-600 p-1"><i class="fa-solid fa-trash text-xs"></i></button>
                     </div>
@@ -634,8 +654,6 @@
 
                 grid.innerHTML += `
                     <div class="${cardClass}">
-                        
-                        <!-- Header Kotak Pasien -->
                         <div class="${headerClass}">
                             <div class="flex items-center space-x-2">
                                 <div class="bg-white/20 p-1.5 rounded-lg">
@@ -646,7 +664,6 @@
                             <span class="text-xs font-semibold px-2.5 py-1 rounded-full border ${warnaPenjamin} bg-white shadow-xs">${p.penjamin}</span>
                         </div>
 
-                        <!-- Isi Detail Pasien -->
                         <div class="p-4 space-y-3 flex-grow">
                             <div>
                                 <h4 class="font-bold text-slate-800 text-base leading-tight">${p.nama}</h4>
@@ -672,27 +689,24 @@
                             </div>
                         </div>
 
-                        <!-- Bagian Upload & Tombol Aksi Pasien Pulang -->
                         <div class="${isVVIPGold ? 'bg-amber-50/30 border-amber-200/60' : 'bg-slate-50/70 border-sky-100'} p-3.5 border-t space-y-2">
                             <p class="text-xs font-semibold text-slate-600 flex items-center justify-between">
                                 <span><i class="fa-solid fa-folder-open mr-1.5 ${isVVIPGold ? 'text-amber-500' : 'text-sky-500'}"></i>Hasil Pemeriksaan:</span>
                                 <span class="text-[10px] text-slate-400 font-normal">EKG / Lab / Radiologi</span>
                             </p>
-                            ${p.fileMedis.length > 0 ? `<div class="grid grid-cols-1 gap-1.5 max-h-28 overflow-y-auto">${fileListHTML}</div>` : `<p class="text-[11px] text-slate-400 italic">Belum ada file diunggah.</p>`}
+                            ${p.fileMedis.length > 0 ? `<div class="grid grid-cols-1 gap-1.5 max-h-32 overflow-y-auto">${fileListHTML}</div>` : `<p class="text-[11px] text-slate-400 italic">Belum ada file diunggah.</p>`}
                             
                             <div class="flex space-x-2 pt-1">
-                                <label class="flex-1 bg-white hover:${isVVIPGold ? 'bg-amber-50 text-amber-800 border-amber-300' : 'bg-sky-50 text-sky-700 border-sky-200'} text-center py-1.5 px-2.5 rounded-xl text-xs font-semibold cursor-pointer border shadow-2xs transition flex items-center justify-center space-x-1">
+                                <button onclick="bukaModalUpload(${p.id}, 'upload')" class="flex-1 bg-white hover:${isVVIPGold ? 'bg-amber-50 text-amber-800 border-amber-300' : 'bg-sky-50 text-sky-700 border-sky-200'} text-center py-1.5 px-2.5 rounded-xl text-xs font-semibold cursor-pointer border shadow-2xs transition flex items-center justify-center space-x-1">
                                     <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    <span>Upload</span>
-                                    <input type="file" onchange="uploadFilePasien(event, ${p.id})" class="hidden" accept="image/*,.pdf">
-                                </label>
-                                <button onclick="triggerKamera(${p.id})" class="flex-1 ${isVVIPGold ? 'bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white shadow-amber-200' : 'bg-sky-600 hover:bg-sky-700 text-white'} py-1.5 px-2.5 rounded-xl text-xs font-semibold shadow-xs transition flex items-center justify-center space-x-1">
+                                    <span>Upload File</span>
+                                </button>
+                                <button onclick="bukaModalUpload(${p.id}, 'kamera')" class="flex-1 ${isVVIPGold ? 'bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white shadow-amber-200' : 'bg-sky-600 hover:bg-sky-700 text-white'} py-1.5 px-2.5 rounded-xl text-xs font-semibold shadow-xs transition flex items-center justify-center space-x-1">
                                     <i class="fa-solid fa-camera"></i>
-                                    <span>Foto</span>
+                                    <span>Ambil Foto</span>
                                 </button>
                             </div>
 
-                            <!-- Tombol Pulang / Checkout Pasien -->
                             <div class="pt-1">
                                 <button onclick="pulangkanPasien(${p.id})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-3 rounded-xl text-xs font-bold shadow-xs transition flex items-center justify-center space-x-1.5">
                                     <i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
@@ -700,7 +714,6 @@
                                 </button>
                             </div>
                         </div>
-
                     </div>
                 `;
             });
@@ -717,7 +730,55 @@
             }
         }
 
-        // Modal Tambah DPJP dengan Dropdown Dokter
+        // Modal Unggah / Foto dengan Keterangan
+        function bukaModalUpload(pasienId, metode) {
+            document.getElementById('upload-pasien-id').value = pasienId;
+            document.getElementById('upload-metode-sumber').value = metode;
+            let fileInput = document.getElementById('upload-file-input');
+            fileInput.value = '';
+            
+            if(metode === 'kamera') {
+                fileInput.setAttribute('capture', 'environment');
+            } else {
+                fileInput.removeAttribute('capture');
+            }
+
+            document.getElementById('modal-upload-file').classList.remove('hidden');
+        }
+
+        function tutupModalUpload() {
+            document.getElementById('modal-upload-file').classList.add('hidden');
+        }
+
+        function prosesSimpanFile() {
+            let pasienId = parseInt(document.getElementById('upload-pasien-id').value);
+            let keterangan = document.getElementById('upload-keterangan').value;
+            let fileInput = document.getElementById('upload-file-input');
+            let file = fileInput.files[0];
+
+            if(!file) {
+                alert("Mohon pilih file atau ambil foto terlebih dahulu!");
+                return;
+            }
+
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let pasien = dataPasien.find(p => p.id === pasienId);
+                if(pasien) {
+                    pasien.fileMedis.push({
+                        keterangan: keterangan,
+                        nama: file.name || `Pemeriksaan_${Date.now()}.jpg`,
+                        url: e.target.result
+                    });
+                    tutupModalUpload();
+                    renderDashboard();
+                    alert("Hasil pemeriksaan berhasil ditambahkan!");
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Modal Tambah DPJP
         function bukaModalTambahDpjp(idPasien) {
             let dokterList = dataPetugas.filter(p => p.peran === 'Dokter');
             let select = document.getElementById('select-pilih-dokter');
@@ -729,11 +790,11 @@
 
             select.innerHTML = dokterList.map(d => `<option value="${d.nama}">${d.nama} (${d.info})</option>`).join('');
             document.getElementById('current-pasien-id-dpjp').value = idPasien;
-            document.getElementById('modal-dpjp').classList.remove('hidden');
+            document.getElementById('modal-tambah-dpjp').classList.remove('hidden');
         }
 
         function tutupModalDpjp() {
-            document.getElementById('modal-dpjp').classList.add('hidden');
+            document.getElementById('modal-tambah-dpjp').classList.add('hidden');
         }
 
         function simpanDpjpBaru() {
@@ -756,12 +817,16 @@
         // Modal Pasien Baru
         function bukaModalPasienBaru() {
             let dokterList = dataPetugas.filter(p => p.peran === 'Dokter');
-            let select = document.getElementById('modal-dpjp');
-            select.innerHTML = dokterList.map(d => `<option value="${d.nama}">${d.nama}</option>`).join('');
-            document.getElementById('modal-pasien').classList.remove('hidden');
+            let select = document.getElementById('modal-dpjp-utama');
+            if(dokterList.length > 0) {
+                select.innerHTML = dokterList.map(d => `<option value="${d.nama}">${d.nama}</option>`).join('');
+            } else {
+                select.innerHTML = `<option value="Belum ada dokter">Belum ada dokter terdaftar</option>`;
+            }
+            document.getElementById('modal-pasien-baru').classList.remove('hidden');
         }
         function tutupModalPasienBaru() {
-            document.getElementById('modal-pasien').classList.add('hidden');
+            document.getElementById('modal-pasien-baru').classList.add('hidden');
         }
         function simpanPasienBaru() {
             let nama = document.getElementById('modal-nama').value;
@@ -770,7 +835,7 @@
             let ruangan = document.getElementById('modal-ruangan').value;
             let penjamin = document.getElementById('modal-penjamin').value;
             let diagnosa = document.getElementById('modal-diagnosa').value;
-            let dpjp = document.getElementById('modal-dpjp').value;
+            let dpjp = document.getElementById('modal-dpjp-utama').value;
 
             if(!nama || !rm) {
                 alert("Mohon isi nama dan No. RM pasien dengan lengkap!");
@@ -787,40 +852,9 @@
 
             tutupModalPasienBaru();
             renderDashboard();
+            alert("Pasien baru berhasil ditambahkan!");
         }
 
-        // Upload & Kamera File
-        function uploadFilePasien(event, pasienId) {
-            let file = event.target.files[0];
-            if(file) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    let pasien = dataPasien.find(p => p.id === pasienId);
-                    pasien.fileMedis.push({ nama: file.name, url: e.target.result });
-                    renderDashboard();
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-        function triggerKamera(pasienId) {
-            let input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.capture = 'environment';
-            input.onchange = (e) => {
-                let file = e.target.files[0];
-                if(file) {
-                    let reader = new FileReader();
-                    reader.onload = function(evt) {
-                        let pasien = dataPasien.find(p => p.id === pasienId);
-                        pasien.fileMedis.push({ nama: `Foto_${Date.now()}.jpg`, url: evt.target.result });
-                        renderDashboard();
-                    }
-                    reader.readAsDataURL(file);
-                }
-            };
-            input.click();
-        }
         function hapusFile(pasienId, fileIdx) {
             let pasien = dataPasien.find(p => p.id === pasienId);
             pasien.fileMedis.splice(fileIdx, 1);
@@ -902,7 +936,6 @@
             selectPenerima.innerHTML = perawatList.map(p => `<option value="${p.nama}">${p.nama}</option>`).join('');
             selectKaru.innerHTML = karuList.map(k => `<option value="${k.nama}">${k.nama} (${k.peran})</option>`).join('');
 
-            // Sinkronisasi nama penandatangan untuk cetak
             function updatePrintNames() {
                 document.getElementById('print-nama-pemberi').innerText = selectPemberi.value || '( ................................... )';
                 document.getElementById('print-nama-penerima').innerText = selectPenerima.value || '( ................................... )';
@@ -962,7 +995,7 @@
             let t = dataTugasGlobal.find(item => item.id === id);
             if(t) {
                 t.selesai = !t.selesai;
-                renderDaftarTugas();
+                renderDdaftarTugas();
             }
         }
         function hapusTugas(id) {
@@ -1018,7 +1051,6 @@
             `).join('');
         }
 
-        // Inisialisasi awal saat halaman dimuat
         window.onload = function() {
             updateRealtimeClock();
             renderDashboard();
