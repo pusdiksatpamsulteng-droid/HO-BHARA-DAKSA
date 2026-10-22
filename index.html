@@ -28,7 +28,6 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Pengaturan Khusus Print / Cetak */
         @media print {
             body {
                 background: white !important;
@@ -71,7 +70,6 @@
     <!-- ================= LAYAR LOGIN ================= -->
     <div id="login-screen" class="fixed inset-0 bg-sky-900/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 border border-sky-100 space-y-6 text-center">
-            <!-- Logo & Title -->
             <div class="flex flex-col items-center space-y-3">
                 <div class="w-20 h-20 bg-sky-50 rounded-2xl flex items-center justify-center p-2 shadow-inner border border-sky-100">
                     <img src="https://i.ibb.co.com/F4zqsJQw/RSBP-removebg-preview.png" alt="Logo RS Bhayangkara" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1516549655169-df83a0774514?w=100';">
@@ -82,7 +80,7 @@
                 </div>
             </div>
 
-            <form onsubmit="prosesLogin(event)" class="space-y-4 text-left">
+            <form onsubmit="window.prosesLogin(event)" class="space-y-4 text-left">
                 <div>
                     <label class="block text-xs font-medium text-slate-600 mb-1">Peran / Profesi</label>
                     <div class="relative">
@@ -104,7 +102,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Kata Sandi (Password / PSD)</label>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Kata Sandi (PSD)</label>
                     <div class="relative">
                         <input type="password" id="login-password" required placeholder="••••••••" class="w-full border border-slate-300 rounded-xl p-2.5 pl-9 text-sm focus:outline-none focus:border-sky-500">
                         <i class="fa-solid fa-lock absolute left-3 top-3 text-slate-400 text-sm"></i>
@@ -121,19 +119,10 @@
                     <span>Masuk ke Sistem</span>
                 </button>
             </form>
-
-            <div class="border-t pt-4 text-left">
-                <p class="text-[11px] text-slate-500 font-semibold mb-1">Panduan Singkat Login:</p>
-                <p class="text-[10px] text-slate-400 leading-relaxed">
-                    • <strong>KARU:</strong> ID: <code>KARU</code> | Pass: <code>JEANNE123</code><br>
-                    • <strong>Perawat:</strong> ID sesuai nama (Cth: <code>ICIL</code>, <code>DWI</code>, <code>STEVANO</code>, dll) | Pass: PSD masing-masing.<br>
-                    • <strong>Dokter:</strong> ID NIP Dokter | Pass: <code>12345</code>
-                </p>
-            </div>
         </div>
     </div>
 
-    <!-- Header / Navbar Utama -->
+    <!-- Header Utama -->
     <header class="bg-sky-600 text-white shadow-md sticky top-0 z-40 print:hidden">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
@@ -142,27 +131,25 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg leading-tight">VVIP Bhara Daksa - RS Bhayangkara Palu</h1>
-                    <p class="text-xs text-sky-100">Sistem Laporan & Catatan Terintegrasi Perawat</p>
+                    <p class="text-xs text-sky-100">Sistem Laporan Terintegrasi Cloud Firebase</p>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
-                <!-- Widget Real-time Waktu WITA -->
                 <span id="realtime-clock" class="text-xs bg-sky-700 px-3 py-1.5 rounded-full font-medium hidden md:inline-block shadow-inner">
                     <i class="fa-regular fa-calendar-days mr-1"></i> Memuat waktu...
                 </span>
 
-                <!-- Profil User & Logout -->
                 <div class="flex items-center space-x-2 bg-sky-700/80 px-3 py-1 rounded-xl border border-sky-500/50">
                     <div class="text-right hidden sm:block">
                         <p id="user-display-name" class="text-xs font-bold leading-tight">Ns. User</p>
                         <p id="user-display-role" class="text-[10px] text-sky-200">Perawat</p>
                     </div>
-                    <button onclick="prosesLogout()" title="Keluar dari sistem" class="bg-rose-500 hover:bg-rose-600 text-white p-1.5 rounded-lg text-xs transition shadow">
+                    <button onclick="window.prosesLogout()" title="Keluar dari sistem" class="bg-rose-500 hover:bg-rose-600 text-white p-1.5 rounded-lg text-xs transition shadow">
                         <i class="fa-solid fa-power-off"></i>
                     </button>
                 </div>
 
-                <button onclick="bukaModalPasienBaru()" class="bg-white text-sky-600 hover:bg-sky-50 px-3.5 py-1.5 rounded-lg text-sm font-semibold shadow transition flex items-center space-x-1.5">
+                <button onclick="window.bukaModalPasienBaru()" class="bg-white text-sky-600 hover:bg-sky-50 px-3.5 py-1.5 rounded-lg text-sm font-semibold shadow transition flex items-center space-x-1.5">
                     <i class="fa-solid fa-plus"></i>
                     <span class="hidden sm:inline">Pasien Baru</span>
                 </button>
@@ -170,38 +157,33 @@
         </div>
     </header>
 
-    <!-- Main Navigation Tabs -->
+    <!-- Navigasi -->
     <nav class="bg-white border-b border-sky-100 shadow-sm sticky top-14 z-30 print:hidden">
         <div class="max-w-7xl mx-auto px-4 flex overflow-x-auto space-x-6">
-            <button onclick="gantiTab('dashboard')" id="nav-dashboard" class="nav-btn py-3 border-b-2 border-sky-600 text-sky-600 font-semibold text-sm flex items-center space-x-2 whitespace-nowrap">
+            <button onclick="window.gantiTab('dashboard')" id="nav-dashboard" class="nav-btn py-3 border-b-2 border-sky-600 text-sky-600 font-semibold text-sm flex items-center space-x-2 whitespace-nowrap">
                 <i class="fa-solid fa-chart-pie"></i>
                 <span>Dashboard</span>
             </button>
-            <button onclick="gantiTab('catatan')" id="nav-catatan" class="nav-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-sky-600 font-medium text-sm flex items-center space-x-2 whitespace-nowrap">
+            <button onclick="window.gantiTab('catatan')" id="nav-catatan" class="nav-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-sky-600 font-medium text-sm flex items-center space-x-2 whitespace-nowrap">
                 <i class="fa-solid fa-notes-medical"></i>
-                <span>Catatan & TTV</span>
+                <span>Catatan, TTV & Lab</span>
             </button>
-            <button onclick="gantiTab('handover')" id="nav-handover" class="nav-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-sky-600 font-medium text-sm flex items-center space-x-2 whitespace-nowrap">
+            <button onclick="window.gantiTab('handover')" id="nav-handover" class="nav-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-sky-600 font-medium text-sm flex items-center space-x-2 whitespace-nowrap">
                 <i class="fa-solid fa-right-left"></i>
                 <span>Hand Over (Aplosan)</span>
             </button>
-            <button onclick="gantiTab('tugas')" id="nav-tugas" class="nav-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-sky-600 font-medium text-sm flex items-center space-x-2 whitespace-nowrap">
+            <button onclick="window.gantiTab('tugas')" id="nav-tugas" class="nav-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-sky-600 font-medium text-sm flex items-center space-x-2 whitespace-nowrap">
                 <i class="fa-solid fa-list-check"></i>
                 <span>Manajemen Tugas</span>
-            </button>
-            <button onclick="gantiTab('petugas')" id="nav-petugas" class="nav-btn py-3 border-b-2 border-transparent text-slate-500 hover:text-sky-600 font-medium text-sm flex items-center space-x-2 whitespace-nowrap">
-                <i class="fa-solid fa-user-doctor"></i>
-                <span>Tambah Petugas</span>
             </button>
         </div>
     </nav>
 
-    <!-- Content Area -->
+    <!-- Konten Utama -->
     <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 print:p-0">
 
-        <!-- ================= SECTION 1: DASHBOARD ================= -->
+        <!-- DASHBOARD -->
         <section id="section-dashboard" class="space-y-6">
-            <!-- Statistik Atas -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div class="bg-white p-4 rounded-xl shadow-sm border border-sky-100 flex items-center space-x-4">
                     <div class="p-3 bg-sky-100 text-sky-600 rounded-lg text-xl"><i class="fa-solid fa-bed-pulse"></i></div>
@@ -218,992 +200,377 @@
                     </div>
                 </div>
                 <div class="bg-white p-4 rounded-xl shadow-sm border border-sky-100 flex items-center space-x-4">
-                    <div class="p-3 bg-sky-100 text-sky-600 rounded-lg text-xl"><i class="fa-solid fa-file-shield"></i></div>
+                    <div class="p-3 bg-sky-100 text-sky-600 rounded-lg text-xl"><i class="fa-solid fa-cloud"></i></div>
                     <div>
-                        <p class="text-xs text-slate-500 font-medium uppercase">Pasien Berdasarkan Penjamin</p>
-                        <h3 id="stat-penjamin" class="text-sm font-bold text-slate-800 leading-snug mt-1">-</h3>
+                        <p class="text-xs text-slate-500 font-medium uppercase">Status Server Cloud</p>
+                        <h3 class="text-sm font-bold text-emerald-600 mt-1"><i class="fa-solid fa-circle-check"></i> Terhubung Online</h3>
                     </div>
                 </div>
             </div>
 
-            <!-- Filter DPJP & Pencarian -->
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-sky-100 flex flex-wrap items-center justify-between gap-4">
-                <div class="flex items-center space-x-2 w-full md:w-auto">
-                    <span class="text-sm font-medium text-slate-600"><i class="fa-solid fa-filter mr-1 text-sky-600"></i> Filter DPJP:</span>
-                    <select id="filter-dpjp" onchange="renderDashboard()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-sky-500 bg-white">
-                        <option value="">Semua DPJP</option>
-                    </select>
-                </div>
-                <div class="w-full md:w-72 relative">
-                    <input type="text" id="cari-pasien" oninput="renderDashboard()" placeholder="Cari nama pasien / No. RM..." class="w-full border border-slate-300 rounded-lg pl-9 pr-3 py-1.5 text-sm focus:outline-none focus:border-sky-500">
-                    <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-sm"></i>
-                </div>
-            </div>
-
-            <!-- Kartu Kotak Pasien -->
             <div>
-                <h3 class="text-base font-bold text-slate-700 mb-3"><i class="fa-solid fa-hospital mr-2 text-sky-600"></i>Daftar Kotak Pasien Dirawat (VVIP Bhara Daksa)</h3>
-                <div id="grid-pasien" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    <!-- Data Pasien -->
-                </div>
+                <h3 class="text-base font-bold text-slate-700 mb-3"><i class="fa-solid fa-hospital mr-2 text-sky-600"></i>Daftar Kotak Pasien (Tersinkronisasi Realtime)</h3>
+                <div id="grid-pasien" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
             </div>
         </section>
 
-        <!-- ================= SECTION 2: CATATAN PERAWAT & TTV ================= -->
+        <!-- CATATAN & TTV & UPLOAD -->
         <section id="section-catatan" class="hidden space-y-6">
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-sky-100">
-                <h2 class="text-base font-bold text-slate-800 mb-4"><i class="fa-solid fa-notes-medical text-sky-600 mr-2"></i>Catatan Perkembangan & Tanda Vital (TTV)</h2>
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-sky-100 space-y-6">
+                <h2 class="text-base font-bold text-slate-800"><i class="fa-solid fa-notes-medical text-sky-600 mr-2"></i>Catatan Perkembangan, TTV & Hasil Pemeriksaan Medis</h2>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">Pilih Pasien</label>
-                        <select id="catatan-select-pasien" onchange="muatCatatanPasien()" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:border-sky-500 bg-white">
-                            <!-- Diisi JS -->
-                        </select>
-                    </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Pilih Pasien</label>
+                    <select id="catatan-select-pasien" onchange="window.muatCatatanPasien()" class="w-full md:w-1/3 border border-slate-300 rounded-lg p-2 text-sm bg-white"></select>
                 </div>
 
-                <!-- Input TTV & Catatan Baru -->
-                <div class="bg-sky-50 p-4 rounded-xl border border-sky-100 space-y-4">
-                    <h3 class="text-sm font-semibold text-sky-900">Tambah Catatan & TTV Baru</h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <div>
-                            <label class="block text-xs text-slate-600 mb-1">Tekanan Darah (mmHg)</label>
-                            <input type="text" id="input-td" placeholder="120/80" class="w-full border border-slate-300 rounded-lg p-1.5 text-sm bg-white">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Form SOAP -->
+                    <div class="lg:col-span-2 bg-sky-50 p-4 rounded-xl border border-sky-100 space-y-4">
+                        <h3 class="text-sm font-semibold text-sky-900"><i class="fa-solid fa-file-pen mr-1"></i> Tambah Catatan SOAP & TTV Baru</h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <input type="text" id="input-td" placeholder="TD (120/80)" class="border p-2 rounded text-sm bg-white">
+                            <input type="text" id="input-nadi" placeholder="Nadi (80)" class="border p-2 rounded text-sm bg-white">
+                            <input type="text" id="input-suhu" placeholder="Suhu (36.5)" class="border p-2 rounded text-sm bg-white">
+                            <input type="text" id="input-spo2" placeholder="SpO2 (98%)" class="border p-2 rounded text-sm bg-white">
                         </div>
-                        <div>
-                            <label class="block text-xs text-slate-600 mb-1">Nadi (x/menit)</label>
-                            <input type="text" id="input-nadi" placeholder="80" class="w-full border border-slate-300 rounded-lg p-1.5 text-sm bg-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-slate-600 mb-1">Suhu (°C)</label>
-                            <input type="text" id="input-suhu" placeholder="36.5" class="w-full border border-slate-300 rounded-lg p-1.5 text-sm bg-white">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-slate-600 mb-1">SpO2 (%)</label>
-                            <input type="text" id="input-spo2" placeholder="98" class="w-full border border-slate-300 rounded-lg p-1.5 text-sm bg-white">
+                        <textarea id="input-catatan-teks" rows="3" placeholder="Catatan SOAP..." class="w-full border p-2 rounded text-sm bg-white"></textarea>
+                        <div class="flex justify-end">
+                            <button onclick="window.tambahCatatanBaru()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-sky-700">Simpan Catatan</button>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-xs text-slate-600 mb-1">Catatan Keperawatan (SOAP)</label>
-                        <textarea id="input-catatan-teks" rows="2" placeholder="S: Keluhan... O: Keadaan umum... A: Masalah... P: Intervensi..." class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:outline-none focus:border-sky-500"></textarea>
-                    </div>
-                    <div class="flex justify-end">
-                        <button onclick="tambahCatatanBaru()" class="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition">
-                            <i class="fa-solid fa-plus mr-1"></i> Simpan Catatan & TTV
+
+                    <!-- Form Unggah Berkas Cloud -->
+                    <div class="bg-indigo-50/60 p-4 rounded-xl border border-indigo-100 space-y-4">
+                        <h3 class="text-sm font-semibold text-indigo-900"><i class="fa-solid fa-cloud-arrow-up mr-1"></i> Unggah Hasil Pemeriksaan</h3>
+                        <select id="upload-keterangan" class="w-full border p-2 rounded text-sm bg-white font-semibold">
+                            <option value="EKG">EKG (Elektrokardiogram)</option>
+                            <option value="Laboratorium">Laboratorium (Lab)</option>
+                            <option value="Radiologi">Radiologi (Rontgen/USG)</option>
+                            <option value="Resep / Terapi">Resep / Catatan Terapi</option>
+                        </select>
+                        <input type="file" id="upload-file-input" class="w-full border p-1 text-xs bg-white rounded" accept="image/*,.pdf">
+                        <button onclick="window.prosesSimpanFileCloud()" class="w-full bg-indigo-600 text-white py-2 rounded-lg text-xs font-semibold hover:bg-indigo-700 flex items-center justify-center space-x-1">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span>Unggah ke Cloud Storage</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Riwayat Catatan -->
-                <div class="mt-6">
-                    <h3 class="text-sm font-bold text-slate-700 mb-3">Riwayat Catatan & TTV Pasien</h3>
-                    <div id="container-riwayat-catatan" class="space-y-3">
-                        <!-- Render JS -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4 border-t">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-700 mb-3">Riwayat Catatan & TTV Pasien</h3>
+                        <div id="container-riwayat-catatan" class="space-y-3 max-h-80 overflow-y-auto"></div>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-700 mb-3">Arsip Berkas & Foto Terunggah (Cloud)</h3>
+                        <div id="container-riwayat-file" class="space-y-2 max-h-80 overflow-y-auto"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ================= SECTION 3: HAND OVER ================= -->
+        <!-- HANDOVER -->
         <section id="section-handover" class="hidden space-y-6">
             <div class="bg-white p-5 rounded-xl shadow-sm border border-sky-100 space-y-4 print-container">
-                
-                <!-- KOP SURAT KHUSUS CETAK -->
-                <div class="hidden print:block text-center border-b-2 border-slate-800 pb-3 mb-4">
-                    <h2 class="text-base font-bold tracking-wider">RUMAH SAKIT BHAYANGKARA PALU</h2>
-                    <h1 class="text-lg font-extrabold uppercase tracking-wide">RUANGAN VVIP BHARA DAKSA</h1>
-                    <p class="text-xs text-slate-700 mt-0.5">LEMBAR SERAH TERIMA / HAND OVER (APLOSAN) SHIFT KEPERAWATAN</p>
-                </div>
-
                 <div class="flex justify-between items-center print:hidden">
                     <h2 class="text-base font-bold text-slate-800"><i class="fa-solid fa-right-left text-sky-600 mr-2"></i>Lembar Hand Over (Operan Shift)</h2>
-                    <button onclick="window.print()" class="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow transition flex items-center space-x-1.5">
-                        <i class="fa-solid fa-print"></i>
-                        <span>Cetak Lembar Resmi</span>
-                    </button>
+                    <button onclick="window.print()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-sm font-semibold"><i class="fa-solid fa-print mr-1"></i> Cetak Lembar Resmi</button>
                 </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-sky-50 p-4 rounded-xl border border-sky-100 print:bg-white print:border-none print:p-0 print:mb-4">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1 print:font-bold print:text-black">Perawat Pemberi Aplosan</label>
-                        <select id="handover-pemberi" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white print:border-none print:p-0 print:font-semibold"></select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1 print:font-bold print:text-black">Perawat Penerima Aplosan</label>
-                        <select id="handover-penerima" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white print:border-none print:p-0 print:font-semibold"></select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1 print:font-bold print:text-black">Kepala Ruangan (Karu)</label>
-                        <select id="handover-karu" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white print:border-none print:p-0 print:font-semibold"></select>
-                    </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-700 border">
+                        <thead class="bg-sky-100 text-sky-900 font-semibold">
+                            <tr>
+                                <th class="p-3">Kamar & No. RM</th>
+                                <th class="p-3">Nama Pasien / Umur</th>
+                                <th class="p-3">Diagnosa & Penjamin</th>
+                                <th class="p-3">Tindakan Belum Selesai</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabel-handover-body" class="divide-y"></tbody>
+                    </table>
                 </div>
-
-                <div>
-                    <h3 class="text-sm font-bold text-slate-700 mb-3 print:hidden">Ringkasan Status Pasien & Tindakan Tertunda</h3>
-                    <div class="overflow-x-auto border border-slate-200 rounded-xl print:border-none">
-                        <table class="w-full text-left text-sm text-slate-700">
-                            <thead class="bg-sky-100 text-sky-900 font-semibold border-b border-sky-200">
-                                <tr>
-                                    <th class="p-3">Kamar & No. RM</th>
-                                    <th class="p-3">Nama Pasien / Umur</th>
-                                    <th class="p-3">Diagnosa & Penjamin</th>
-                                    <th class="p-3">Tindakan Belum Selesai</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabel-handover-body" class="divide-y divide-slate-200">
-                                <!-- Render JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- TANDA TANGAN DIBAWAH KHUSUS CETAK -->
-                <div class="hidden print:grid grid-cols-3 gap-6 pt-10 text-center text-xs">
-                    <div>
-                        <p class="mb-14">Perawat Pemberi Operan,</p>
-                        <p id="print-nama-pemberi" class="font-bold underline">_________________________</p>
-                    </div>
-                    <div>
-                        <p class="mb-14">Perawat Penerima Operan,</p>
-                        <p id="print-nama-penerima" class="font-bold underline">_________________________</p>
-                    </div>
-                    <div>
-                        <p class="mb-14">Mengetahui,<br>Kepala Ruangan VVIP Bhara Daksa</p>
-                        <p id="print-nama-karu" class="font-bold underline">_________________________</p>
-                    </div>
-                </div>
-
             </div>
         </section>
 
-        <!-- ================= SECTION 4: MANAJEMEN TUGAS ================= -->
+        <!-- MANAJEMEN TUGAS -->
         <section id="section-tugas" class="hidden space-y-6">
             <div class="bg-white p-5 rounded-xl shadow-sm border border-sky-100 space-y-4">
                 <h2 class="text-base font-bold text-slate-800"><i class="fa-solid fa-list-check text-sky-600 mr-2"></i>Manajemen Tugas & Rencana Tindakan</h2>
-                
-                <!-- Form Tambah Tugas -->
-                <div class="bg-sky-50 p-4 rounded-xl border border-sky-100 grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
-                    <div>
-                        <label class="block text-xs text-slate-600 mb-1">Pilih Pasien</label>
-                        <select id="tugas-pasien" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
-                            <!-- Diisi JS -->
-                        </select>
-                    </div>
-                    <div class="sm:col-span-2">
-                        <label class="block text-xs text-slate-600 mb-1">Deskripsi Tindakan / Tugas</label>
-                        <input type="text" id="tugas-deskripsi" placeholder="Contoh: Berikan injeksi Ceftriaxone 1g jam 12.00" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
-                    </div>
-                    <div>
-                        <button onclick="tambahTugasBaru()" class="w-full bg-sky-600 hover:bg-sky-700 text-white py-2 px-4 rounded-lg text-sm font-semibold shadow transition">
-                            <i class="fa-solid fa-plus mr-1"></i> Tambah Tugas
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Daftar Tugas -->
-                <div>
-                    <h3 class="text-sm font-bold text-slate-700 mb-3">Daftar Rencana Tindakan Aktif</h3>
-                    <div id="container-daftar-tugas" class="space-y-2">
-                        <!-- Render JS -->
-                    </div>
-                </div>
+                <div id="container-daftar-tugas" class="space-y-2"></div>
             </div>
         </section>
-
-        <!-- ================= SECTION 5: TAMBAH PETUGAS ================= -->
-        <section id="section-petugas" class="hidden space-y-6">
-            <div class="bg-white p-5 rounded-xl shadow-sm border border-sky-100 max-w-xl mx-auto space-y-4">
-                <h2 class="text-base font-bold text-slate-800"><i class="fa-solid fa-user-doctor text-sky-600 mr-2"></i>Pendaftaran Petugas Baru</h2>
-                
-                <div class="space-y-3">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">Nama Lengkap beserta Gelar</label>
-                        <input type="text" id="petugas-nama" placeholder="Contoh: Ns. Siti Aminah, S.Kep / dr. Budi, Sp.PD" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:border-sky-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">Peran / Profesi</label>
-                        <select id="petugas-peran" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:border-sky-500 bg-white">
-                            <option value="Perawat">Perawat</option>
-                            <option value="Dokter">Dokter</option>
-                            <option value="Kepala Ruangan">Kepala Ruangan (Karu)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">ID Login (NIP / Kode)</label>
-                        <input type="text" id="petugas-nip" placeholder="Contoh: BARU01" class="w-full border border-slate-300 rounded-lg p-2 text-sm uppercase focus:outline-none focus:border-sky-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">Kata Sandi (PSD)</label>
-                        <input type="password" id="petugas-pass" placeholder="Password login..." class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:border-sky-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">Spesialisasi / Ruangan Tugas</label>
-                        <input type="text" id="petugas-info" value="VVIP Bhara Daksa" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:border-sky-500">
-                    </div>
-                    <button onclick="simpanPetugasBaru()" class="w-full bg-sky-600 hover:bg-sky-700 text-white py-2 rounded-lg text-sm font-semibold shadow transition">
-                        <i class="fa-solid fa-user-plus mr-1"></i> Daftarkan Petugas
-                    </button>
-                </div>
-
-                <div class="mt-6 border-t pt-4">
-                    <h3 class="text-xs font-bold text-slate-600 uppercase mb-2">Daftar Petugas Terdaftar</h3>
-                    <div id="list-petugas-terdaftar" class="space-y-2 max-h-48 overflow-y-auto">
-                        <!-- Render JS -->
-                    </div>
-                </div>
-            </div>
-        </section>
-
     </main>
 
-    <!-- ================= MODAL TAMBAH PASIEN BARU ================= -->
+    <!-- MODAL PASIEN BARU -->
     <div id="modal-pasien-baru" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-bold text-base text-slate-800"><i class="fa-solid fa-user-plus text-sky-600 mr-2"></i>Tambah Pasien Baru</h3>
-                <button onclick="tutupModalPasienBaru()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4">
+            <h3 class="font-bold text-base text-slate-800">Tambah Pasien Baru (Cloud Sync)</h3>
             <div class="space-y-3">
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Nama Pasien</label>
-                    <input type="text" id="modal-nama" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
+                <input type="text" id="modal-nama" placeholder="Nama Pasien" class="w-full border p-2 rounded text-sm">
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="number" id="modal-umur" placeholder="Umur (Thn)" class="border p-2 rounded text-sm">
+                    <input type="text" id="modal-rm" placeholder="No. RM" class="border p-2 rounded text-sm">
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">Umur (Tahun)</label>
-                        <input type="number" id="modal-umur" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">No. Rekam Medis (RM)</label>
-                        <input type="text" id="modal-rm" class="w-full border border-slate-300 rounded-lg p-2 text-sm">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">Kamar / Ruangan</label>
-                        <select id="modal-ruangan" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
-                            <option value="VVIP 1">VVIP 1</option>
-                            <option value="VVIP 2">VVIP 2</option>
-                            <option value="VVIP 3">VVIP 3</option>
-                            <option value="VVIP 4">VVIP 4</option>
-                            <option value="Bhara Daksa 5A">Bhara Daksa 5A</option>
-                            <option value="Bhara Daksa 5B">Bhara Daksa 5B</option>
-                            <option value="Bhara Daksa 6A">Bhara Daksa 6A</option>
-                            <option value="Bhara Daksa 6B">Bhara Daksa 6B</option>
-                            <option value="Bhara Daksa 7A">Bhara Daksa 7A</option>
-                            <option value="Bhara Daksa 7B">Bhara Daksa 7B</option>
-                            <option value="Bhara Daksa 8A">Bhara Daksa 8A</option>
-                            <option value="Bhara Daksa 8B">Bhara Daksa 8B</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">Penjamin</label>
-                        <select id="modal-penjamin" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white">
-                            <option value="BPJS">BPJS</option>
-                            <option value="Umum">Umum</option>
-                            <option value="POLRI">POLRI</option>
-                            <option value="Keluarga">Keluarga</option>
-                            <option value="Asuransi">Asuransi</option>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Diagnosa Medis</label>
-                    <textarea id="modal-diagnosa" rows="2" class="w-full border border-slate-300 rounded-lg p-2 text-sm"></textarea>
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">DPJP Utama</label>
-                    <select id="modal-dpjp-utama" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white"></select>
-                </div>
-            </div>
-            <div class="flex justify-end space-x-2 pt-2 border-t">
-                <button onclick="tutupModalPasienBaru()" class="px-4 py-2 border rounded-lg text-sm text-slate-600 hover:bg-slate-50">Batal</button>
-                <button onclick="simpanPasienBaru()" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-sm font-semibold shadow">Simpan Pasien</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= MODAL TAMBAH DPJP ================= -->
-    <div id="modal-tambah-dpjp" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-xl space-y-4">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-bold text-sm text-slate-800"><i class="fa-solid fa-user-doctor text-sky-600 mr-1.5"></i>Tambah DPJP Pasien</h3>
-                <button onclick="tutupModalDpjp()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-base"></i></button>
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-slate-600 mb-1.5">Pilih Dokter DPJP:</label>
-                <select id="select-pilih-dokter" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:outline-none focus:border-sky-500">
-                    <!-- Diisi JS -->
-                </select>
-                <input type="hidden" id="current-pasien-id-dpjp">
-            </div>
-            <div class="flex justify-end space-x-2 pt-2 border-t">
-                <button onclick="tutupModalDpjp()" class="px-3 py-1.5 border rounded-lg text-xs text-slate-600 hover:bg-slate-50">Batal</button>
-                <button onclick="simpanDpjpBaru()" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-xs font-semibold shadow">Tambah DPJP</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= MODAL UPLOAD / FOTO DENGAN KETERANGAN ================= -->
-    <div id="modal-upload-file" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl space-y-4">
-            <div class="flex justify-between items-center border-b pb-2">
-                <h3 class="font-bold text-sm text-slate-800"><i class="fa-solid fa-file-medical text-sky-600 mr-1.5"></i>Unggah Hasil Pemeriksaan</h3>
-                <button onclick="tutupModalUpload()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-base"></i></button>
-            </div>
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Kategori / Keterangan Pemeriksaan</label>
-                    <select id="upload-keterangan" class="w-full border border-slate-300 rounded-lg p-2 text-sm bg-white focus:outline-none focus:border-sky-500 font-semibold text-slate-700">
-                        <option value="EKG">EKG (Elektrokardiogram)</option>
-                        <option value="Laboratorium">Laboratorium (Lab)</option>
-                        <option value="Radiologi">Radiologi (Rontgen/USG/CT-Scan)</option>
-                        <option value="Resep / Terapi">Resep / Catatan Terapi</option>
-                        <option value="Lainnya">Lainnya / Umum</option>
+                    <select id="modal-ruangan" class="border p-2 rounded text-sm bg-white">
+                        <option value="VVIP 1">VVIP 1</option>
+                        <option value="VVIP 2">VVIP 2</option>
+                        <option value="VVIP 3">VVIP 3</option>
+                        <option value="Bhara Daksa 5A">Bhara Daksa 5A</option>
+                    </select>
+                    <select id="modal-penjamin" class="border p-2 rounded text-sm bg-white">
+                        <option value="BPJS">BPJS</option>
+                        <option value="POLRI">POLRI</option>
+                        <option value="Umum">Umum</option>
                     </select>
                 </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Pilih File / Dokumen (PDF/Gambar)</label>
-                    <input type="file" id="upload-file-input" class="w-full border border-slate-300 rounded-lg p-1.5 text-xs bg-white" accept="image/*,.pdf">
-                </div>
-                <input type="hidden" id="upload-pasien-id">
-                <input type="hidden" id="upload-metode-sumber">
+                <textarea id="modal-diagnosa" placeholder="Diagnosa Medis..." class="w-full border p-2 rounded text-sm"></textarea>
             </div>
             <div class="flex justify-end space-x-2 pt-2 border-t">
-                <button onclick="tutupModalUpload()" class="px-3 py-1.5 border rounded-lg text-xs text-slate-600 hover:bg-slate-50">Batal</button>
-                <button onclick="prosesSimpanFile()" class="px-4 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-xs font-semibold shadow">Simpan & Unggah</button>
+                <button onclick="window.tutupModalPasienBaru()" class="px-4 py-2 border rounded-lg text-sm">Batal</button>
+                <button onclick="window.simpanPasienBaruCloud()" class="px-4 py-2 bg-sky-600 text-white rounded-lg text-sm font-semibold">Simpan ke Cloud</button>
             </div>
         </div>
     </div>
 
-    <!-- ================= MODAL FULL SCREEN GAMBAR / FILE ================= -->
-    <div id="modal-lightbox" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
-        <div class="relative max-w-4xl w-full flex flex-col items-center">
-            <button onclick="tutupLightbox()" class="absolute -top-10 right-0 text-white text-xl hover:text-sky-300"><i class="fa-solid fa-xmark"></i></button>
-            <img id="lightbox-img" src="" alt="Lampiran Pemeriksaan" class="max-h-[80vh] rounded-lg shadow-2xl object-contain">
-        </div>
+    <!-- Lightbox Modal Gambar -->
+    <div id="modal-lightbox" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4" onclick="window.tutupLightbox()">
+        <img id="lightbox-img" src="" class="max-h-[80vh] rounded-lg shadow-2xl object-contain">
     </div>
 
-    <!-- ================= JAVASCRIPT LOGIC ================= -->
-    <script>
-        // Data Akun Petugas Lengkap (KARU, Perawat, dan Dokter)
+    <!-- ================= FIREBASE CLOUD INTEGRATION ================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-storage.js";
+
+        // KONFIGURASI FIREBASE ANDA ("laporan-bharadaksa")
+        const firebaseConfig = {
+            apiKey: "AIzaSyBE_AjbNyNXlTJM79C3uN7s-jO-tUpHG44",
+            authDomain: "laporan-bharadaksa.firebaseapp.com",
+            projectId: "laporan-bharadaksa",
+            storageBucket: "laporan-bharadaksa.firebasestorage.app",
+            messagingSenderId: "862719713742",
+            appId: "1:862719713742:web:fbcac5ac9d80debe7a4b9f",
+            measurementId: "G-2FJERRGK1P"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        let dataPasien = [];
         let dataPetugas = [
-            // KARU
-            { nip: "KARU", pass: "JEANNE123", nama: "Ns. Jeanne", peran: "Kepala Ruangan", info: "Karu VVIP Bhara Daksa" },
-            
-            // Perawat
-            { nip: "ICIL", pass: "201706115", nama: "Ns. Icil, S.Kep", peran: "Perawat", info: "VVIP Bhara Daksa" },
-            { nip: "DWI", pass: "2019171280", nama: "Ns. Dwi, S.Kep", peran: "Perawat", info: "VVIP Bhara Daksa" },
-            { nip: "STEVANO", pass: "290996", nama: "Ns. Stevano, S.Kep", peran: "Perawat", info: "VVIP Bhara Daksa" },
-            { nip: "DILVI", pass: "2026051504", nama: "Ns. Dilvi, S.Kep", peran: "Perawat", info: "VVIP Bhara Daksa" },
-            { nip: "ANDRE", pass: "2026090103", nama: "Ns. Andre, S.Kep", peran: "Perawat", info: "VVIP Bhara Daksa" },
-            { nip: "RARA", pass: "2026040212", nama: "Ns. Rara, S.Kep", peran: "Perawat", info: "VVIP Bhara Daksa" },
-            { nip: "ALYA", pass: "2026010303", nama: "Ns. Alya, S.Kep", peran: "Perawat", info: "VVIP Bhara Daksa" },
-            { nip: "AINUN", pass: "2026040213", nama: "Ns. Ainun, S.Kep", peran: "Perawat", info: "VVIP Bhara Daksa" },
-            { nip: "SUSAN", pass: "2026050101", nama: "Ns. Susan, S.Kep", peran: "Perawat", info: "VVIP Bhara Daksa" },
-
-            // Dokter DPJP Default
-            { nip: "19850101", pass: "12345", nama: "dr. Andi Wijaya, Sp.PD", peran: "Dokter", info: "Penyakit Dalam" },
-            { nip: "19880202", pass: "12345", nama: "dr. Siska Maharani, Sp.A", peran: "Dokter", info: "Anak" }
+            { nip: "KARU", pass: "JEANNE123", nama: "Ns. Jeanne", peran: "Kepala Ruangan" },
+            { nip: "ICIL", pass: "201706115", nama: "Ns. Icil, S.Kep", peran: "Perawat" },
+            { nip: "DWI", pass: "2019171280", nama: "Ns. Dwi, S.Kep", peran: "Perawat" },
+            { nip: "STEVANO", pass: "290996", nama: "Ns. Stevano, S.Kep", peran: "Perawat" },
+            { nip: "DILVI", pass: "2026051504", nama: "Ns. Dilvi, S.Kep", peran: "Perawat" },
+            { nip: "ANDRE", pass: "2026090103", nama: "Ns. Andre, S.Kep", peran: "Perawat" },
+            { nip: "RARA", pass: "2026040212", nama: "Ns. Rara, S.Kep", peran: "Perawat" },
+            { nip: "ALYA", pass: "2026010303", nama: "Ns. Alya, S.Kep", peran: "Perawat" },
+            { nip: "AINUN", pass: "2026040213", nama: "Ns. Ainun, S.Kep", peran: "Perawat" },
+            { nip: "SUSAN", pass: "2026050101", nama: "Ns. Susan, S.Kep", peran: "Perawat" }
         ];
 
-        let dataPasien = [
-            {
-                id: 1,
-                nama: "Kombes Pol. H. M. Ridwan",
-                umur: 52,
-                rm: "10-23-45",
-                ruangan: "VVIP 1",
-                diagnosa: "Hipertensi Esensial & Fatigue",
-                penjamin: "POLRI",
-                dpjp: ["dr. Andi Wijaya, Sp.PD"],
-                catatan: [
-                    { waktu: "06/10/2026 08:00", ttd: "TD: 130/85, N: 84, S: 36.6, SpO2: 98%", teks: "S: Pasien mengeluh pusing berkurang. O: Kesadaran compos mentis. A: Tekanan darah stabil. P: Lanjutkan terapi oral." }
-                ],
-                fileMedis: [
-                    { keterangan: "EKG", nama: "EKG_Awal.jpg", url: "https://via.placeholder.com/600x400.png?text=Contoh+Hasil+EKG" }
-                ],
-                tindakan: [
-                    { id: 101, teks: "Cek Tensi Berkala jam 14.00", selesai: false }
-                ]
+        // MENGAMBIL DATA PASIEN SECARA REALTIME DARI DATABASE CLOUD
+        onSnapshot(collection(db, "pasien"), (snapshot) => {
+            dataPasien = [];
+            snapshot.forEach((doc) => {
+                dataPasien.push({ id: doc.id, ...doc.data() });
+            });
+            renderDashboard();
+            if(!document.getElementById('section-catatan').classList.contains('hidden')) {
+                muatCatatanPasien();
             }
-        ];
+        });
 
-        let dataTugasGlobal = [
-            { id: 1, pasienId: 1, pasienNama: "Kombes Pol. H. M. Ridwan", teks: "Cek Tensi Berkala jam 14.00", selesai: false }
-        ];
-
-        // LOGIKA LOGIN & SESSION
-        function prosesLogin(e) {
+        // FUNGSI LOGIN & SESSION
+        window.prosesLogin = function(e) {
             e.preventDefault();
             const peran = document.getElementById('login-peran').value;
             const nip = document.getElementById('login-nip').value.trim().toUpperCase();
             const pass = document.getElementById('login-password').value;
-            const errorBox = document.getElementById('login-error');
-
             const match = dataPetugas.find(p => p.nip.toUpperCase() === nip && p.pass === pass && p.peran === peran);
 
             if (match) {
-                errorBox.classList.add('hidden');
-                sessionStorage.setItem('e_nursing_user', JSON.stringify({
-                    nama: match.nama,
-                    peran: match.peran,
-                    nip: match.nip
-                }));
-                cekSession();
-            } else {
-                errorBox.classList.remove('hidden');
-                document.getElementById('login-error-msg').innerText = "ID, Kata Sandi, atau Peran tidak cocok!";
-            }
-        }
-
-        function cekSession() {
-            const userSession = sessionStorage.getItem('e_nursing_user');
-            const loginScreen = document.getElementById('login-screen');
-
-            if (userSession) {
-                const user = JSON.parse(userSession);
-                document.getElementById('user-display-name').innerText = user.nama;
-                document.getElementById('user-display-role').innerText = user.peran;
-                loginScreen.classList.add('hidden');
+                sessionStorage.setItem('e_nursing_user', JSON.stringify(match));
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('user-display-name').innerText = match.nama;
+                document.getElementById('user-display-role').innerText = match.peran;
                 renderDashboard();
             } else {
-                loginScreen.classList.remove('hidden');
+                document.getElementById('login-error').classList.remove('hidden');
             }
         }
 
-        function prosesLogout() {
-            if (confirm("Apakah Anda yakin ingin keluar dari sistem?")) {
-                sessionStorage.removeItem('e_nursing_user');
-                document.getElementById('login-nip').value = '';
-                document.getElementById('login-password').value = '';
-                cekSession();
-            }
+        window.prosesLogout = function() {
+            sessionStorage.removeItem('e_nursing_user');
+            location.reload();
         }
 
-        // Jam Real-Time WITA
-        function updateRealtimeClock() {
-            const options = { 
-                timeZone: 'Asia/Makassar', 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric', 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit',
-                hour12: false
-            };
-            try {
-                const now = new Date();
-                const formatter = new Intl.DateTimeFormat('id-ID', options);
-                let formattedString = formatter.format(now);
-                document.getElementById('realtime-clock').innerHTML = `<i class="fa-regular fa-calendar-days mr-1"></i> ${formattedString} WITA`;
-            } catch (e) {
-                console.error("Gagal memuat jam real-time", e);
-            }
-        }
-        setInterval(updateRealtimeClock, 1000);
+        // TAMBAH PASIEN KE DATABASE CLOUD
+        window.simpanPasienBaruCloud = async function() {
+            const nama = document.getElementById('modal-nama').value;
+            const umur = parseInt(document.getElementById('modal-umur').value) || 0;
+            const rm = document.getElementById('modal-rm').value;
+            const ruangan = document.getElementById('modal-ruangan').value;
+            const penjamin = document.getElementById('modal-penjamin').value;
+            const diagnosa = document.getElementById('modal-diagnosa').value;
 
-        // Navigasi Tab
-        function gantiTab(tabId) {
-            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('border-sky-600', 'text-sky-600', 'font-semibold');
-                btn.classList.add('border-transparent', 'text-slate-500', 'font-medium');
-            });
-            document.getElementById(`section-${tabId}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`nav-${tabId}`);
-            activeBtn.classList.remove('border-transparent', 'text-slate-500', 'font-medium');
-            activeBtn.classList.add('border-sky-600', 'text-sky-600', 'font-semibold');
+            if(!nama || !rm) return alert("Isi nama dan No. RM pasien!");
 
-            if(tabId === 'dashboard') renderDashboard();
-            if(tabId === 'catatan') initCatatanDropdown();
-            if(tabId === 'handover') renderHandover();
-            if(tabId === 'tugas') initTugasDropdown();
-            if(tabId === 'petugas') renderListPetugas();
-        }
-
-        // Render Dashboard
-        function renderDashboard() {
-            const filterDpjp = document.getElementById('filter-dpjp').value;
-            const keyword = document.getElementById('cari-pasien').value.toLowerCase();
-            
-            document.getElementById('stat-total-pasien').innerText = dataPasien.length;
-            document.getElementById('stat-total-tugas').innerText = dataTugasGlobal.filter(t => !t.selesai).length;
-            
-            let penjaminCount = {};
-            dataPasien.forEach(p => {
-                if(p.penjamin) {
-                    penjaminCount[p.penjamin] = (penjaminCount[p.penjamin] || 0) + 1;
-                }
-            });
-
-            let penjaminTextArr = [];
-            for (let penjamin in penjaminCount) {
-                penjaminTextArr.push(`${penjamin} ${penjaminCount[penjamin]}`);
-            }
-            document.getElementById('stat-penjamin').innerText = penjaminTextArr.length > 0 ? penjaminTextArr.join(', ') : 'Tidak ada pasien';
-
-            let dokterList = dataPetugas.filter(p => p.peran === 'Dokter');
-            let selectFilter = document.getElementById('filter-dpjp');
-            let currentVal = selectFilter.value;
-            selectFilter.innerHTML = '<option value="">Semua DPJP</option>';
-            dokterList.forEach(d => {
-                selectFilter.innerHTML += `<option value="${d.nama}">${d.nama}</option>`;
-            });
-            selectFilter.value = currentVal;
-
-            let grid = document.getElementById('grid-pasien');
-            grid.innerHTML = '';
-
-            let filtered = dataPasien.filter(p => {
-                let matchDpjp = filterDpjp === "" || p.dpjp.includes(filterDpjp);
-                let matchKeyword = p.nama.toLowerCase().includes(keyword) || p.rm.includes(keyword) || p.ruangan.toLowerCase().includes(keyword);
-                return matchDpjp && matchKeyword;
-            });
-
-            if(filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-sm bg-white rounded-2xl border border-sky-100 shadow-sm">Tidak ada data pasien yang sesuai.</div>`;
-                return;
-            }
-
-            filtered.forEach(p => {
-                let isVVIPGold = ["VVIP 1", "VVIP 2", "VVIP 3", "VVIP 4"].includes(p.ruangan);
-                let dpjpTags = p.dpjp.map(d => `<span class="${isVVIPGold ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-sky-50 text-sky-700 border-sky-200/60'} text-xs font-medium px-2.5 py-1 rounded-md border shadow-2xs">${d}</span>`).join(' ');
-                
-                let warnaPenjamin = "bg-slate-100 text-slate-700 border-slate-200";
-                if(p.penjamin === 'BPJS') warnaPenjamin = "bg-emerald-50 text-emerald-700 border-emerald-200";
-                if(p.penjamin === 'POLRI') warnaPenjamin = "bg-blue-50 text-blue-700 border-blue-200";
-                if(p.penjamin === 'Umum') warnaPenjamin = "bg-amber-50 text-amber-700 border-amber-200";
-                if(p.penjamin === 'Asuransi') warnaPenjamin = "bg-purple-50 text-purple-700 border-purple-200";
-                if(p.penjamin === 'Keluarga') warnaPenjamin = "bg-rose-50 text-rose-700 border-rose-200";
-
-                let fileListHTML = p.fileMedis.map((f, idx) => `
-                    <div class="flex items-center justify-between ${isVVIPGold ? 'bg-amber-50/40 hover:bg-amber-50 border-amber-200/60' : 'bg-sky-50/50 hover:bg-sky-50 border-sky-100'} px-2.5 py-1.5 rounded-lg text-xs border transition">
-                        <span class="truncate max-w-[150px] cursor-pointer ${isVVIPGold ? 'text-amber-800' : 'text-sky-700'} font-medium hover:underline flex items-center" onclick="bukaLightbox('${f.url}')">
-                            <i class="fa-solid fa-file-medical mr-1.5 ${isVVIPGold ? 'text-amber-600' : 'text-sky-500'}"></i><strong>[${f.keterangan}]</strong>&nbsp;${f.nama}
-                        </span>
-                        <button onclick="hapusFile(${p.id}, ${idx})" class="text-rose-400 hover:text-rose-600 p-1"><i class="fa-solid fa-trash text-xs"></i></button>
-                    </div>
-                `).join('');
-
-                let cardClass = isVVIPGold 
-                    ? "bg-gradient-to-b from-amber-50/50 via-white to-white rounded-2xl shadow-lg hover:shadow-2xl border-2 border-amber-400/80 overflow-hidden flex flex-col justify-between transition-all duration-300 transform hover:-translate-y-1"
-                    : "bg-white rounded-2xl shadow-md hover:shadow-xl border border-sky-100/80 overflow-hidden flex flex-col justify-between transition-all duration-300 transform hover:-translate-y-1";
-
-                let headerClass = isVVIPGold
-                    ? "bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 px-4 py-3 text-white flex justify-between items-center shadow-md"
-                    : "bg-gradient-to-r from-sky-500 to-sky-600 px-4 py-3 text-white flex justify-between items-center shadow-inner";
-
-                grid.innerHTML += `
-                    <div class="${cardClass}">
-                        <div class="${headerClass}">
-                            <div class="flex items-center space-x-2">
-                                <div class="bg-white/20 p-1.5 rounded-lg">
-                                    <i class="fa-solid ${isVVIPGold ? 'fa-crown text-amber-100' : 'fa-bed'} text-sm"></i>
-                                </div>
-                                <span class="font-bold tracking-wide text-sm">Kamar ${p.ruangan}</span>
-                            </div>
-                            <span class="text-xs font-semibold px-2.5 py-1 rounded-full border ${warnaPenjamin} bg-white shadow-xs">${p.penjamin}</span>
-                        </div>
-
-                        <div class="p-4 space-y-3 flex-grow">
-                            <div>
-                                <h4 class="font-bold text-slate-800 text-base leading-tight">${p.nama}</h4>
-                                <div class="flex items-center space-x-2 mt-1">
-                                    <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md"><i class="fa-solid fa-cake-candles mr-1 ${isVVIPGold ? 'text-amber-500' : 'text-sky-500'}"></i>${p.umur} Thn</span>
-                                    <span class="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md"><i class="fa-solid fa-id-card mr-1 ${isVVIPGold ? 'text-amber-500' : 'text-sky-500'}"></i>RM: ${p.rm}</span>
-                                </div>
-                            </div>
-
-                            <div class="text-xs ${isVVIPGold ? 'bg-amber-50/60 border-amber-200/80' : 'bg-sky-50/60 border-sky-100'} p-2.5 rounded-xl border">
-                                <span class="font-semibold ${isVVIPGold ? 'text-amber-900' : 'text-sky-900'} block mb-0.5 flex items-center"><i class="fa-solid fa-stethoscope mr-1.5 ${isVVIPGold ? 'text-amber-600' : 'text-sky-600'}"></i>Diagnosa Medis:</span>
-                                <p class="text-slate-700 leading-relaxed">${p.diagnosa}</p>
-                            </div>
-
-                            <div class="space-y-1.5">
-                                <div class="flex justify-between items-center text-xs">
-                                    <span class="font-semibold text-slate-600 flex items-center"><i class="fa-solid fa-user-doctor mr-1 ${isVVIPGold ? 'text-amber-600' : 'text-sky-600'}"></i>DPJP:</span>
-                                    <button onclick="bukaModalTambahDpjp(${p.id})" class="${isVVIPGold ? 'text-amber-700 bg-amber-50 hover:bg-amber-100' : 'text-sky-600 bg-sky-50 hover:bg-sky-100'} text-xs font-bold px-2 py-0.5 rounded-md transition flex items-center">
-                                        <i class="fa-solid fa-plus mr-1"></i>Tambah DPJP
-                                    </button>
-                                </div>
-                                <div class="flex flex-wrap gap-1.5 pt-0.5">${dpjpTags}</div>
-                            </div>
-                        </div>
-
-                        <div class="${isVVIPGold ? 'bg-amber-50/30 border-amber-200/60' : 'bg-slate-50/70 border-sky-100'} p-3.5 border-t space-y-2">
-                            <p class="text-xs font-semibold text-slate-600 flex items-center justify-between">
-                                <span><i class="fa-solid fa-folder-open mr-1.5 ${isVVIPGold ? 'text-amber-500' : 'text-sky-500'}"></i>Hasil Pemeriksaan:</span>
-                                <span class="text-[10px] text-slate-400 font-normal">EKG / Lab / Radiologi</span>
-                            </p>
-                            ${p.fileMedis.length > 0 ? `<div class="grid grid-cols-1 gap-1.5 max-h-32 overflow-y-auto">${fileListHTML}</div>` : `<p class="text-[11px] text-slate-400 italic">Belum ada file diunggah.</p>`}
-                            
-                            <div class="flex space-x-2 pt-1">
-                                <button onclick="bukaModalUpload(${p.id}, 'upload')" class="flex-1 bg-white hover:${isVVIPGold ? 'bg-amber-50 text-amber-800 border-amber-300' : 'bg-sky-50 text-sky-700 border-sky-200'} text-center py-1.5 px-2.5 rounded-xl text-xs font-semibold cursor-pointer border shadow-2xs transition flex items-center justify-center space-x-1">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    <span>Upload File</span>
-                                </button>
-                                <button onclick="bukaModalUpload(${p.id}, 'kamera')" class="flex-1 ${isVVIPGold ? 'bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white shadow-amber-200' : 'bg-sky-600 hover:bg-sky-700 text-white'} py-1.5 px-2.5 rounded-xl text-xs font-semibold shadow-xs transition flex items-center justify-center space-x-1">
-                                    <i class="fa-solid fa-camera"></i>
-                                    <span>Ambil Foto</span>
-                                </button>
-                            </div>
-
-                            <div class="pt-1">
-                                <button onclick="pulangkanPasien(${p.id})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-3 rounded-xl text-xs font-bold shadow-xs transition flex items-center justify-center space-x-1.5">
-                                    <i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i>
-                                    <span>Pasien Pulang / Selesai Perawatan</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        // Fungsi Memulangkan Pasien
-        function pulangkanPasien(idPasien) {
-            let pasien = dataPasien.find(p => p.id === idPasien);
-            if(confirm(`Apakah Anda yakin pasien ${pasien.nama} (Kamar ${pasien.ruangan}) sudah diperbolehkan pulang / selesai perawatan?`)) {
-                dataPasien = dataPasien.filter(p => p.id !== idPasien);
-                dataTugasGlobal = dataTugasGlobal.filter(t => t.pasienId !== idPasien);
-                renderDashboard();
-                alert(`Pasien ${pasien.nama} berhasil dipulangkan dari sistem.`);
-            }
-        }
-
-        // Modal Unggah / Foto dengan Keterangan
-        function bukaModalUpload(pasienId, metode) {
-            document.getElementById('upload-pasien-id').value = pasienId;
-            document.getElementById('upload-metode-sumber').value = metode;
-            let fileInput = document.getElementById('upload-file-input');
-            fileInput.value = '';
-            
-            if(metode === 'kamera') {
-                fileInput.setAttribute('capture', 'environment');
-            } else {
-                fileInput.removeAttribute('capture');
-            }
-
-            document.getElementById('modal-upload-file').classList.remove('hidden');
-        }
-
-        function tutupModalUpload() {
-            document.getElementById('modal-upload-file').classList.add('hidden');
-        }
-
-        function prosesSimpanFile() {
-            let pasienId = parseInt(document.getElementById('upload-pasien-id').value);
-            let keterangan = document.getElementById('upload-keterangan').value;
-            let fileInput = document.getElementById('upload-file-input');
-            let file = fileInput.files[0];
-
-            if(!file) {
-                alert("Mohon pilih file atau ambil foto terlebih dahulu!");
-                return;
-            }
-
-            let reader = new FileReader();
-            reader.onload = function(e) {
-                let pasien = dataPasien.find(p => p.id === pasienId);
-                if(pasien) {
-                    pasien.fileMedis.push({
-                        keterangan: keterangan,
-                        nama: file.name || `Pemeriksaan_${Date.now()}.jpg`,
-                        url: e.target.result
-                    });
-                    tutupModalUpload();
-                    renderDashboard();
-                    alert("Hasil pemeriksaan berhasil ditambahkan!");
-                }
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // Modal Tambah DPJP
-        function bukaModalTambahDpjp(idPasien) {
-            let dokterList = dataPetugas.filter(p => p.peran === 'Dokter');
-            let select = document.getElementById('select-pilih-dokter');
-            
-            if(dokterList.length === 0) {
-                alert("Belum ada data dokter terdaftar. Silakan daftarkan dokter terlebih dahulu di menu 'Tambah Petugas'.");
-                return;
-            }
-
-            select.innerHTML = dokterList.map(d => `<option value="${d.nama}">${d.nama} (${d.info})</option>`).join('');
-            document.getElementById('current-pasien-id-dpjp').value = idPasien;
-            document.getElementById('modal-tambah-dpjp').classList.remove('hidden');
-        }
-
-        function tutupModalDpjp() {
-            document.getElementById('modal-tambah-dpjp').classList.add('hidden');
-        }
-
-        function simpanDpjpBaru() {
-            let pasienId = parseInt(document.getElementById('current-pasien-id-dpjp').value);
-            let dokterTerpilih = document.getElementById('select-pilih-dokter').value;
-            let pasien = dataPasien.find(p => p.id === pasienId);
-
-            if(pasien && dokterTerpilih) {
-                if(!pasien.dpjp.includes(dokterTerpilih)) {
-                    pasien.dpjp.push(dokterTerpilih);
-                    tutupModalDpjp();
-                    renderDashboard();
-                    alert("DPJP berhasil ditambahkan!");
-                } else {
-                    alert("Dokter tersebut sudah terdaftar sebagai DPJP pasien ini.");
-                }
-            }
-        }
-
-        // Modal Pasien Baru
-        function bukaModalPasienBaru() {
-            let dokterList = dataPetugas.filter(p => p.peran === 'Dokter');
-            let select = document.getElementById('modal-dpjp-utama');
-            if(dokterList.length > 0) {
-                select.innerHTML = dokterList.map(d => `<option value="${d.nama}">${d.nama}</option>`).join('');
-            } else {
-                select.innerHTML = `<option value="Belum ada dokter">Belum ada dokter terdaftar</option>`;
-            }
-            document.getElementById('modal-pasien-baru').classList.remove('hidden');
-        }
-        function tutupModalPasienBaru() {
-            document.getElementById('modal-pasien-baru').classList.add('hidden');
-        }
-        function simpanPasienBaru() {
-            let nama = document.getElementById('modal-nama').value;
-            let umur = document.getElementById('modal-umur').value;
-            let rm = document.getElementById('modal-rm').value;
-            let ruangan = document.getElementById('modal-ruangan').value;
-            let penjamin = document.getElementById('modal-penjamin').value;
-            let diagnosa = document.getElementById('modal-diagnosa').value;
-            let dpjp = document.getElementById('modal-dpjp-utama').value;
-
-            if(!nama || !rm) {
-                alert("Mohon isi nama dan No. RM pasien dengan lengkap!");
-                return;
-            }
-
-            dataPasien.push({
-                id: Date.now(),
-                nama, umur: parseInt(umur) || 0, rm, ruangan, diagnosa, penjamin,
-                dpjp: [dpjp],
+            const idPasien = "pasien_" + Date.now();
+            await setDoc(doc(db, "pasien", idPasien), {
+                nama, umur, rm, ruangan, penjamin, diagnosa,
+                dpjp: ["dr. Andi Wijaya, Sp.PD"],
                 catatan: [],
                 fileMedis: []
             });
 
-            tutupModalPasienBaru();
-            renderDashboard();
-            alert("Pasien baru berhasil ditambahkan!");
+            window.tutupModalPasienBaru();
+            alert("Pasien tersimpan di Cloud Database!");
         }
 
-        function hapusFile(pasienId, fileIdx) {
-            let pasien = dataPasien.find(p => p.id === pasienId);
-            pasien.fileMedis.splice(fileIdx, 1);
-            renderDashboard();
-        }
-        function bukaLightbox(url) {
-            document.getElementById('lightbox-img').src = url;
-            document.getElementById('modal-lightbox').classList.remove('hidden');
-        }
-        function tutupLightbox() {
-            document.getElementById('modal-lightbox').classList.add('hidden');
-        }
+        // UNGGAH FOTO / BERKAS KE GOOGLE CLOUD STORAGE
+        window.prosesSimpanFileCloud = async function() {
+            const pasienId = document.getElementById('catatan-select-pasien').value;
+            const keterangan = document.getElementById('upload-keterangan').value;
+            const fileInput = document.getElementById('upload-file-input');
+            const file = fileInput.files[0];
 
-        // ================= BAGIAN CATATAN & TTV =================
-        function initCatatanDropdown() {
-            let select = document.getElementById('catatan-select-pasien');
-            select.innerHTML = dataPasien.map(p => `<option value="${p.id}">${p.ruangan} - ${p.nama} (RM: ${p.rm})</option>`).join('');
-            muatCatatanPasien();
-        }
-        function muatCatatanPasien() {
-            let pasienId = parseInt(document.getElementById('catatan-select-pasien').value);
-            let pasien = dataPasien.find(p => p.id === pasienId);
-            let container = document.getElementById('container-riwayat-catatan');
-            
-            if(!pasien || pasien.catatan.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-400">Belum ada catatan untuk pasien ini.</p>`;
-                return;
+            if(!file) return alert("Pilih file gambar atau ambil foto terlebih dahulu!");
+
+            try {
+                const fileRef = ref(storage, `pemeriksaan/${pasienId}/${Date.now()}_${file.name}`);
+                await uploadBytes(fileRef, file);
+                const fileUrl = await getDownloadURL(fileRef);
+
+                const pasienRef = doc(db, "pasien", pasienId);
+                await updateDoc(pasienRef, {
+                    fileMedis: arrayUnion({
+                        keterangan: keterangan,
+                        nama: file.name,
+                        url: fileUrl
+                    })
+                });
+
+                fileInput.value = '';
+                alert("Foto/Berkas berhasil diunggah ke Cloud Storage!");
+            } catch (err) {
+                console.error(err);
+                alert("Gagal mengunggah file. Pastikan Firestore & Storage rules di Firebase Console sudah diset dalam mode Test!");
             }
-
-            container.innerHTML = pasien.catatan.map((c, idx) => `
-                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm space-y-1">
-                    <div class="flex justify-between items-center text-xs text-slate-500">
-                        <span><i class="fa-solid fa-clock mr-1"></i>${c.waktu}</span>
-                        <span class="font-semibold text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">${c.ttd}</span>
-                    </div>
-                    <p class="text-slate-700 whitespace-pre-line text-sm">${c.teks}</p>
-                </div>
-            `).join('');
         }
-        function tambahCatatanBaru() {
-            let pasienId = parseInt(document.getElementById('catatan-select-pasien').value);
-            let pasien = dataPasien.find(p => p.id === pasienId);
-            let td = document.getElementById('input-td').value || '-';
-            let nadi = document.getElementById('input-nadi').value || '-';
-            let suhu = document.getElementById('input-suhu').value || '-';
-            let spo2 = document.getElementById('input-spo2').value || '-';
-            let teks = document.getElementById('input-catatan-teks').value;
 
-            if(!teks) {
-                alert("Mohon isi catatan keperawatan terlebih dahulu!");
-                return;
-            }
+        // SIMPAN CATATAN SOAP KE CLOUD
+        window.tambahCatatanBaru = async function() {
+            const pasienId = document.getElementById('catatan-select-pasien').value;
+            const td = document.getElementById('input-td').value || '-';
+            const nadi = document.getElementById('input-nadi').value || '-';
+            const suhu = document.getElementById('input-suhu').value || '-';
+            const spo2 = document.getElementById('input-spo2').value || '-';
+            const teks = document.getElementById('input-catatan-teks').value;
 
-            let ttdStr = `TD: ${td}, N: ${nadi}, S: ${suhu}°C, SpO2: ${spo2}%`;
-            let now = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Makassar' });
+            if(!teks) return alert("Isi catatan SOAP!");
 
-            pasien.catatan.unshift({ waktu: now, ttd: ttdStr, teks: teks });
-            
-            document.getElementById('input-td').value = '';
-            document.getElementById('input-nadi').value = '';
-            document.getElementById('input-suhu').value = '';
-            document.getElementById('input-spo2').value = '';
+            const ttdStr = `TD: ${td}, N: ${nadi}, S: ${suhu}°C, SpO2: ${spo2}%`;
+            const now = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Makassar' });
+
+            const pasienRef = doc(db, "pasien", pasienId);
+            await updateDoc(pasienRef, {
+                catatan: arrayUnion({ waktu: now, ttd: ttdStr, teks: teks })
+            });
+
             document.getElementById('input-catatan-teks').value = '';
-
-            muatCatatanPasien();
-            alert("Catatan berhasil disimpan!");
+            alert("Catatan SOAP tersimpan!");
         }
 
-        // ================= BAGIAN HAND OVER =================
-        function renderHandover() {
-            let perawatList = dataPetugas.filter(p => p.peran === 'Perawat');
-            let karuList = dataPetugas.filter(p => p.peran === 'Kepala Ruangan' || p.peran === 'Perawat');
-
-            let selectPemberi = document.getElementById('handover-pemberi');
-            let selectPenerima = document.getElementById('handover-penerima');
-            let selectKaru = document.getElementById('handover-karu');
-
-            selectPemberi.innerHTML = perawatList.map(p => `<option value="${p.nama}">${p.nama}</option>`).join('');
-            selectPenerima.innerHTML = perawatList.map(p => `<option value="${p.nama}">${p.nama}</option>`).join('');
-            selectKaru.innerHTML = karuList.map(k => `<option value="${k.nama}">${k.nama} (${k.peran})</option>`).join('');
-
-            function updatePrintNames() {
-                document.getElementById('print-nama-pemberi').innerText = selectPemberi.value || '( ................................... )';
-                document.getElementById('print-nama-penerima').innerText = selectPenerima.value || '( ................................... )';
-                document.getElementById('print-nama-karu').innerText = selectKaru.value ? selectKaru.value.split(' (')[0] : '( ................................... )';
-            }
-            selectPemberi.onchange = updatePrintNames;
-            selectPenerima.onchange = updatePrintNames;
-            selectKaru.onchange = updatePrintNames;
-            updatePrintNames();
-
-            let tbody = document.getElementById('tabel-handover-body');
-            tbody.innerHTML = '';
+        // RENDER TAMPILAN
+        function renderDashboard() {
+            document.getElementById('stat-total-pasien').innerText = dataPasien.length;
+            const grid = document.getElementById('grid-pasien');
+            grid.innerHTML = '';
 
             dataPasien.forEach(p => {
-                let tugasBelum = dataTugasGlobal.filter(t => t.pasienId === p.id && !t.selesai).map(t => `- ${t.teks}`).join('<br>') || 'Tidak ada tindakan tertunda';
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50">
-                        <td class="p-3 font-medium">${p.ruangan}<br><span class="text-xs text-slate-500 print:text-black">RM: ${p.rm}</span></td>
-                        <td class="p-3">${p.nama}<br><span class="text-xs text-slate-500 print:text-black">${p.umur} Thn</span></td>
-                        <td class="p-3">${p.diagnosa}<br><span class="text-xs bg-sky-50 text-sky-700 px-1.5 py-0.5 rounded print:bg-transparent print:p-0">${p.penjamin}</span></td>
-                        <td class="p-3 text-rose-600 text-xs font-medium print:text-black">${tugasBelum}</td>
-                    </tr>
+                grid.innerHTML += `
+                    <div class="bg-white rounded-2xl shadow p-4 border space-y-3">
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span class="font-bold text-sky-700">Kamar ${p.ruangan}</span>
+                            <span class="text-xs bg-sky-100 text-sky-800 px-2 py-0.5 rounded-full font-semibold">${p.penjamin}</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">${p.nama} (${p.umur} Thn)</h4>
+                            <p class="text-xs text-slate-500">RM: ${p.rm}</p>
+                            <p class="text-xs text-slate-600 mt-1"><strong>Diagnosa:</strong> ${p.diagnosa}</p>
+                        </div>
+                        <div class="border-t pt-2 text-xs">
+                            <span class="font-semibold text-slate-600">Hasil Pemeriksaan (${p.fileMedis ? p.fileMedis.length : 0}):</span>
+                            <div class="space-y-1 mt-1">
+                                ${(p.fileMedis || []).map(f => `
+                                    <div class="flex justify-between items-center bg-sky-50 p-1.5 rounded cursor-pointer" onclick="window.bukaLightbox('${f.url}')">
+                                        <span class="truncate"><strong>[${f.keterangan}]</strong>${f.nama}</span>
+                                        <span class="text-sky-600 font-bold">Lihat</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
                 `;
             });
         }
 
-        // ================= BAGIAN MANAJEMEN TUGAS =================
-        function initTugasDropdown() {
-            let select = document.getElementById('tugas-pasien');
-            select.innerHTML = dataPasien.map(p => `<option value="${p.id}">${p.ruangan} - ${p.nama}</option>`).join('');
-            renderDaftarTugas();
-        }
-        function tambahTugasBaru() {
-            let pasienId = parseInt(document.getElementById('tugas-pasien').value);
-            let pasien = dataPasien.find(p => p.id === pasienId);
-            let teksTugas = document.getElementById('tugas-deskripsi').value;
+        window.muatCatatanPasien = function() {
+            const select = document.getElementById('catatan-select-pasien');
+            const currentSelected = select.value;
+            select.innerHTML = dataPasien.map(p => `<option value="${p.id}" ${p.id === currentSelected ? 'selected' : ''}>${p.ruangan} - ${p.nama}</option>`).join('');
+            
+            const pasienId = select.value;
+            const pasien = dataPasien.find(p => p.id === pasienId);
 
-            if(!teksTugas) {
-                alert("Mohon masukkan deskripsi tugas/rencana tindakan!");
-                return;
-            }
+            const containerCatatan = document.getElementById('container-riwayat-catatan');
+            const containerFile = document.getElementById('container-riwayat-file');
 
-            let tugasBaru = {
-                id: Date.now(),
-                pasienId: pasien.id,
-                pasienNama: pasien.nama,
-                teks: teksTugas,
-                selesai: false
-            };
+            if(!pasien) return;
 
-            dataTugasGlobal.push(tugasBaru);
-            document.getElementById('tugas-deskripsi').value = '';
-            renderDaftarTugas();
-            alert("Rencana tindakan berhasil ditambahkan!");
-        }
-        function toggleStatusTugas(id) {
-            let t = dataTugasGlobal.find(item => item.id === id);
-            if(t) {
-                t.selesai = !t.selesai;
-                renderDaftarTugas();
-            }
-        }
-        function hapusTugas(id) {
-            dataTugasGlobal = dataTugasGlobal.filter(item => item.id !== id);
-            renderDaftarTugas();
-        }
-        function renderDaftarTugas() {
-            let container = document.getElementById('container-daftar-tugas');
-            if(dataTugasGlobal.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-400">Belum ada tugas atau rencana tindakan.</p>`;
-                return;
-            }
-
-            container.innerHTML = dataTugasGlobal.map(t => `
-                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    <div class="flex items-center space-x-3">
-                        <input type="checkbox" ${t.selesai ? 'checked' : ''} onchange="toggleStatusTugas(${t.id})" class="w-4 h-4 text-sky-600 rounded cursor-pointer">
-                        <div>
-                            <p class="text-sm font-medium ${t.selesai ? 'line-through text-slate-400' : 'text-slate-800'}">${t.teks}</p>
-                            <span class="text-xs text-sky-600 font-medium">Pasien: ${t.pasienNama}</span>
-                        </div>
+            containerCatatan.innerHTML = (pasien.catatan || []).map(c => `
+                <div class="bg-slate-50 p-3 rounded-xl border text-xs space-y-1">
+                    <div class="flex justify-between text-slate-500">
+                        <span>${c.waktu}</span>
+                        <span class="font-bold text-sky-600">${c.ttd}</span>
                     </div>
-                    <button onclick="hapusTugas(${t.id})" class="text-rose-500 hover:text-rose-700 text-sm"><i class="fa-solid fa-trash"></i></button>
+                    <p class="text-slate-800">${c.teks}</p>
                 </div>
-            `).join('');
-        }
+            `).join('') || '<p class="text-xs text-slate-400">Belum ada catatan.</p>';
 
-        // ================= BAGIAN TAMBAH PETUGAS =================
-        function simpanPetugasBaru() {
-            let nama = document.getElementById('petugas-nama').value;
-            let peran = document.getElementById('petugas-peran').value;
-            let nip = document.getElementById('petugas-nip').value.trim().toUpperCase();
-            let pass = document.getElementById('petugas-pass').value;
-            let info = document.getElementById('petugas-info').value;
-
-            if(!nama || !nip || !pass) {
-                alert("Mohon isi Nama, ID Login, dan Kata Sandi petugas dengan lengkap!");
-                return;
-            }
-
-            dataPetugas.push({ nip, pass, nama, peran, info });
-            document.getElementById('petugas-nama').value = '';
-            document.getElementById('petugas-nip').value = '';
-            document.getElementById('petugas-pass').value = '';
-            renderListPetugas();
-            alert("Petugas baru berhasil didaftarkan dan dapat digunakan untuk login!");
-        }
-        function renderListPetugas() {
-            let container = document.getElementById('list-petugas-terdaftar');
-            container.innerHTML = dataPetugas.map(p => `
-                <div class="flex justify-between items-center bg-slate-50 p-2 rounded border text-xs">
-                    <div>
-                        <strong class="text-slate-800">${p.nama}</strong>
-                        <span class="text-slate-500 block">ID: <strong>${p.nip}</strong> | ${p.peran} - ${p.info}</span>
-                    </div>
+            containerFile.innerHTML = (pasien.fileMedis || []).map(f => `
+                <div class="flex items-center justify-between bg-indigo-50 p-2 rounded-xl text-xs">
+                    <span class="truncate"><strong>[${f.keterangan}]</strong> ${f.nama}</span>
+                    <button onclick="window.bukaLightbox('${f.url}')" class="bg-indigo-600 text-white px-2 py-1 rounded font-semibold">Buka Foto</button>
                 </div>
-            `).join('');
+            `).join('') || '<p class="text-xs text-slate-400">Belum ada file diunggah.</p>';
         }
 
-        window.onload = function() {
-            updateRealtimeClock();
-            cekSession();
+        window.gantiTab = function(tabId) {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+            if(tabId === 'catatan') window.muatCatatanPasien();
         }
+
+        window.bukaModalPasienBaru = () => document.getElementById('modal-pasien-baru').classList.remove('hidden');
+        window.tutupModalPasienBaru = () => document.getElementById('modal-pasien-baru').classList.add('hidden');
+        window.bukaLightbox = (url) => {
+            document.getElementById('lightbox-img').src = url;
+            document.getElementById('modal-lightbox').classList.remove('hidden');
+        }
+        window.tutupLightbox = () => document.getElementById('modal-lightbox').classList.add('hidden');
+
+        // Clock WITA
+        setInterval(() => {
+            const now = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Makassar' });
+            document.getElementById('realtime-clock').innerText = now + " WITA";
+        }, 1000);
     </script>
 </body>
 </html>
