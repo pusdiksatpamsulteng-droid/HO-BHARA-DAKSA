@@ -81,23 +81,28 @@
       background: #D4AF37;
     }
 
-    /* Styles for Printing Handover Report */
+    /* ==================== STYLES PERBAIKAN CETAK / PRINT ==================== */
+    .print-only {
+      display: none !important;
+    }
+
     @media print {
       body {
         background-color: #ffffff !important;
         color: #000000 !important;
-        font-family: Arial, sans-serif !important;
+        font-family: 'Times New Roman', Times, serif !important;
       }
       .no-print {
         display: none !important;
       }
-      .print-only {
+      /* Hanya tampilkan elemen yang diberi class .active-print saat mode cetak */
+      .print-only.active-print {
         display: block !important;
       }
       .print-container {
         width: 100% !important;
         margin: 0 !important;
-        padding: 15px !important;
+        padding: 10px !important;
       }
       table {
         width: 100%;
@@ -115,9 +120,6 @@
         background-color: #f2f2f2 !important;
         font-weight: bold;
       }
-    }
-    .print-only {
-      display: none;
     }
   </style>
 </head>
@@ -577,6 +579,10 @@
           </p>
         </div>
         <div class="flex items-center gap-2">
+          <!-- Tombol Cetak Surat Lepas Perawatan Dalam Modal -->
+          <button onclick="openSuratLepasModalFromDetail()" class="px-3 py-1.5 bg-brand-gold hover:bg-amber-400 text-slate-950 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
+            <i class="fas fa-file-medical"></i> Surat Lepas Perawatan
+          </button>
           <button onclick="dischargePatient()" class="px-3 py-1.5 bg-red-950 hover:bg-red-900 text-red-300 border border-red-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
             <i class="fas fa-door-open"></i> Pasien Pulang/Pindah
           </button>
@@ -694,6 +700,103 @@
   </div>
 
 
+  <!-- ==================== MODAL FORM SURAT LEPAS PERAWATAN ==================== -->
+  <div id="modalSuratLepas" class="no-print fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md hidden">
+    <div class="bg-slate-900 border-2 border-brand-gold/60 rounded-2xl max-w-2xl w-full p-6 shadow-2xl mx-4 max-h-[90vh] flex flex-col">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+        <h3 class="text-lg font-bold text-brand-gold flex items-center gap-2">
+          <i class="fas fa-file-signature"></i> Buat Surat Keterangan Lepas Perawatan
+        </h3>
+        <button onclick="closeSuratLepasModal()" class="text-slate-400 hover:text-white text-lg">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto space-y-4 pr-1">
+        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Nama Pasien</label>
+              <input type="text" id="suratNama" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none font-bold" readonly>
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Umur (Tahun)</label>
+              <input type="text" id="suratUmur" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none" readonly>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] font-bold text-brand-gold uppercase mb-1">Pekerjaan</label>
+              <select id="suratPekerjaan" class="w-full bg-slate-800 border border-brand-gold/40 rounded-xl px-3 py-2 text-xs text-white outline-none font-semibold">
+                <option value="Polri">Polri</option>
+                <option value="PNS">PNS</option>
+                <option value="Swasta">Swasta</option>
+                <option value="Pelajar">Pelajar</option>
+                <option value="Mahasiswa">Mahasiswa</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-brand-gold uppercase mb-1">Pangkat / NRP / NIP</label>
+              <input type="text" id="suratPangkatNrp" placeholder="Contoh: Bripda / 98010203 atau '-'" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Alamat Pasien</label>
+            <input type="text" id="suratAlamat" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none">
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] font-bold text-brand-gold uppercase mb-1">Tanggal Masuk Rumah Sakit</label>
+              <input type="date" id="suratTglMasuk" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none">
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-brand-gold uppercase mb-1">Tanggal Keluar Rumah Sakit</label>
+              <input type="date" id="suratTglKeluar" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-slate-300 uppercase mb-1">Diagnosa Medis</label>
+            <input type="text" id="suratDiagnosa" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none font-semibold">
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-brand-gold uppercase mb-1">Obat Pulang (Pisahkan dengan Koma / Baris Baru)</label>
+            <textarea id="suratObatPulang" rows="3" placeholder="Contoh: Paracetamol 3x500mg, Amoxicillin 3x500mg, Omeprazole 2x20mg..." class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-white outline-none"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-brand-gold uppercase mb-1">Jadwal Kontrol Poliklinik (Hari & Tanggal)</label>
+            <input type="text" id="suratKontrolHari" placeholder="Contoh: Senin, 12 Oktober 2026" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white outline-none">
+          </div>
+
+          <div>
+            <label class="block text-[10px] font-bold text-brand-gold uppercase mb-1">Dokter Pemeriksa / DPJP</label>
+            <select id="suratDokterPemeriksa" class="w-full bg-slate-800 border border-brand-gold/40 rounded-xl px-3 py-2 text-xs text-white outline-none font-bold">
+              <!-- Dynamic Doctor list -->
+            </select>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-800 flex justify-end gap-3">
+        <button onclick="closeSuratLepasModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold">
+          Batal
+        </button>
+        <button onclick="cetakSuratLepasPerawatan()" class="px-5 py-2 bg-gradient-to-r from-emerald-700 to-emerald-600 hover:from-emerald-600 text-white rounded-xl text-xs font-bold border border-emerald-400 shadow flex items-center gap-2">
+          <i class="fas fa-print"></i> Cetak Surat Lepas Perawatan
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
   <!-- ==================== MODAL HAND OVER & APLOSAN DINAS ==================== -->
   <div id="modalHandover" class="no-print fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md hidden">
     <div class="bg-slate-900 border-2 border-brand-gold/60 rounded-2xl max-w-4xl w-full p-6 shadow-2xl mx-4 h-[90vh] flex flex-col">
@@ -779,9 +882,9 @@
 
 
   <!-- ==================== PRINTABLE HANDOVER REPORT (LAYOUT CETAK A4) ==================== -->
-  <div class="print-only print-container">
+  <div id="printAreaHandover" class="print-only print-container">
     <div style="text-align: center; border-bottom: 3px double #000; padding-bottom: 8px; margin-bottom: 15px;">
-      <div style="display: flex; items-center: center; justify-content: center; gap: 15px; margin-bottom: 5px;">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 5px;">
         <img src="https://i.ibb.co.com/F4zqsJQw/RSBP-removebg-preview.png" style="height: 50px; width: auto;" alt="Logo RSBP">
         <div>
           <h2 style="margin: 0; font-size: 14pt; font-weight: bold; text-transform: uppercase;">RUMAH SAKIT BHAYANGKARA / RUANGAN BHARA DAKSA</h2>
@@ -849,6 +952,105 @@
   </div>
 
 
+  <!-- ==================== PRINTABLE SURAT LEPAS PERAWATAN (FORMAT DOKUMEN RESMI) ==================== -->
+  <div id="printAreaSuratLepas" class="print-only print-container" style="font-family: 'Times New Roman', Times, serif; color: #000; line-height: 1.5; padding: 20px 40px;">
+    
+    <!-- Kop Surat Resmi -->
+    <div style="text-align: center; margin-bottom: 20px; position: relative;">
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <img src="https://i.ibb.co.com/F4zqsJQw/RSBP-removebg-preview.png" style="height: 65px; width: auto; margin-bottom: 6px;" alt="Logo Polda">
+        <h2 style="margin: 0; font-size: 13pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">KEPOLISIAN DAERAH SULAWESI TENGAH</h2>
+        <h2 style="margin: 0; font-size: 13pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">RUMAH SAKIT BHAYANGKARA TK.III PALU</h2>
+        <p style="margin: 2px 0 0 0; font-size: 10pt; text-decoration: underline;">Jl. Dr. Suharso Lrg.III No.02 Palu. Telp. 0451-429714</p>
+      </div>
+    </div>
+
+    <!-- Judul Dokumen -->
+    <div style="text-align: center; margin-top: 25px; margin-bottom: 25px;">
+      <h3 style="margin: 0; font-size: 12pt; font-weight: bold; text-decoration: underline; text-transform: uppercase; letter-spacing: 1px;">SURAT KETERANGAN LEPAS PERAWATAN</h3>
+    </div>
+
+    <!-- Isian Menerangkan -->
+    <p style="font-size: 11pt; margin-bottom: 12px;">Dengan ini menerangkan bahwa :</p>
+
+    <table style="width: 100%; border-collapse: collapse; border: none; font-size: 11pt; margin-left: 10px; margin-bottom: 20px;">
+      <tr style="border: none;">
+        <td style="width: 25%; padding: 4px 0; border: none !important;">Nama</td>
+        <td style="width: 3%; padding: 4px 0; border: none !important;">:</td>
+        <td style="padding: 4px 0; border: none !important; font-weight: bold;" id="pSuratNama">.............................................................................</td>
+      </tr>
+      <tr style="border: none;">
+        <td style="padding: 4px 0; border: none !important;">Umur</td>
+        <td style="padding: 4px 0; border: none !important;">:</td>
+        <td style="padding: 4px 0; border: none !important;" id="pSuratUmur">...... Tahun</td>
+      </tr>
+      <tr style="border: none;">
+        <td style="padding: 4px 0; border: none !important;">Pekerjaan</td>
+        <td style="padding: 4px 0; border: none !important;">:</td>
+        <td style="padding: 4px 0; border: none !important;" id="pSuratPekerjaan">Polri / PNS / Swasta / Pelajar / Mahasiswa</td>
+      </tr>
+      <tr style="border: none;">
+        <td style="padding: 4px 0; border: none !important;">Pangkat/NRP</td>
+        <td style="padding: 4px 0; border: none !important;">:</td>
+        <td style="padding: 4px 0; border: none !important;" id="pSuratPangkatNrp">.............................................................................</td>
+      </tr>
+      <tr style="border: none;">
+        <td style="padding: 4px 0; border: none !important;">Alamat</td>
+        <td style="padding: 4px 0; border: none !important;">:</td>
+        <td style="padding: 4px 0; border: none !important;" id="pSuratAlamat">.............................................................................</td>
+      </tr>
+      <tr style="border: none;">
+        <td style="padding: 4px 0; border: none !important;">Masuk Rumah Sakit</td>
+        <td style="padding: 4px 0; border: none !important;">:</td>
+        <td style="padding: 4px 0; border: none !important;" id="pSuratTglMasuk">.............................................................................</td>
+      </tr>
+      <tr style="border: none;">
+        <td style="padding: 4px 0; border: none !important;">Keluar Rumah Sakit</td>
+        <td style="padding: 4px 0; border: none !important;">:</td>
+        <td style="padding: 4px 0; border: none !important;" id="pSuratTglKeluar">.............................................................................</td>
+      </tr>
+      <tr style="border: none;">
+        <td style="padding: 4px 0; border: none !important;">Diagnosa</td>
+        <td style="padding: 4px 0; border: none !important;">:</td>
+        <td style="padding: 4px 0; border: none !important; font-weight: bold;" id="pSuratDiagnosa">.............................................................................</td>
+      </tr>
+      <tr style="border: none; vertical-align: top;">
+        <td style="padding: 4px 0; border: none !important;">Obat Pulang</td>
+        <td style="padding: 4px 0; border: none !important;">:</td>
+        <td style="padding: 4px 0; border: none !important; white-space: pre-wrap;" id="pSuratObatPulang">.............................................................................</td>
+      </tr>
+    </table>
+
+    <p style="font-size: 11pt; margin-top: 25px; margin-bottom: 35px; text-align: justify;">
+      Demikian surat keterangan ini dibuat untuk digunakan sebagaimana perlunya.
+    </p>
+
+    <!-- Section Catatan & Tanda Tangan -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 20px; page-break-inside: avoid;">
+      
+      <!-- Catatan Kiri Bawah -->
+      <div style="width: 50%; font-size: 10pt;">
+        <p style="margin: 0 0 5px 0; font-weight: bold; text-decoration: underline;">Catatan :</p>
+        <p style="margin: 0 0 5px 0; text-align: justify; line-height: 1.3;">
+          &#10033; <b>Sebelum pulang, wajib membuat SEP kontrol ke poliklinik Rumkit Bhayangkara Palu.</b>
+        </p>
+        <p style="margin: 0; line-height: 1.3;">
+          &#10033; Kontrol Poliklinik hari: <span id="pSuratKontrolHari" style="font-weight: bold; border-bottom: 1px dotted #000;">....................................</span>
+        </p>
+      </div>
+
+      <!-- Tanda Tangan Kanan Bawah -->
+      <div style="width: 45%; text-align: center; font-size: 11pt;">
+        <p style="margin: 0 0 5px 0;">Palu, <span id="pSuratTglCetak">...... / ...... /2026</span></p>
+        <p style="margin: 0 0 65px 0; font-weight: bold;">Dokter Pemeriksa</p>
+        <p style="margin: 0; font-weight: bold; text-decoration: underline;" id="pSuratDokterNama">dr. ....................................</p>
+      </div>
+
+    </div>
+
+  </div>
+
+
   <!-- ==================== FIREBASE SDK 10 INTEGRATION ==================== -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -905,7 +1107,6 @@
         loadedUsers.push({ id: docSnap.id, ...docSnap.data() });
       });
       if(loadedUsers.length > 0) {
-        // Pastikan akun stevano selalu ada
         if (!loadedUsers.some(u => u.username === "stevano")) {
           loadedUsers.push({ id: "admin_stevano", name: "Stevano (Admin)", role: "ADMIN", username: "stevano", password: "290996" });
         }
@@ -928,7 +1129,6 @@
       "Bhara Daksa 8A", "Bhara Daksa 8B"
     ];
 
-    // Default Akun Awal termasuk Akun Super Admin Stevano
     const DEFAULT_USERS = [
       { id: "admin_stevano", name: "Stevano (Admin)", role: "ADMIN", username: "stevano", password: "290996" },
       { id: "u_1", name: "Ns. Rina S.Kep", role: "PERAWAT", username: "rina", password: "123" },
@@ -940,7 +1140,6 @@
     window.tasks = JSON.parse(localStorage.getItem('bd_tasks')) || [];
     window.appUsers = JSON.parse(localStorage.getItem('bd_app_users')) || DEFAULT_USERS;
     
-    // Pastikan admin stevano selalu tersedia
     if (!window.appUsers.some(u => u.username === "stevano")) {
       window.appUsers.push({ id: "admin_stevano", name: "Stevano (Admin)", role: "ADMIN", username: "stevano", password: "290996" });
     }
@@ -978,7 +1177,7 @@
     }
 
     /* -------------------------------------------------------------------
-       AUTHENTICATION & USER MANAGEMENT (SPECIAL ADMIN ACCESS)
+       AUTHENTICATION & ADMIN ACCESS CONTROL
     ------------------------------------------------------------------- */
     function checkAuthStatus() {
       const modal = document.getElementById("loginModal");
@@ -993,7 +1192,6 @@
         document.getElementById("userBadgeMobile").innerText = currentUserObj.name;
         document.getElementById("userRoleBadge").innerHTML = `<i class="fas fa-circle text-[6px] text-emerald-400"></i> ${currentUserObj.role}`;
 
-        // PROTEKSI: Cek apakah login menggunakan akun stevano
         if (currentUserObj.username === "stevano") {
           btnHeader.classList.remove("hidden");
           btnBar.classList.remove("hidden");
@@ -1030,7 +1228,6 @@
     }
 
     function openModalManageUsers() {
-      // Keamanan Tambahan: Hanya izinkan Stevano membuka modal
       if (!currentUserObj || currentUserObj.username !== "stevano") {
         alert("Akses Ditolak! Fitur Kelola Akun hanya dapat diakses oleh Admin Stevano.");
         return;
@@ -1066,7 +1263,6 @@
       window.appUsers.push(newUser);
       localStorage.setItem('bd_app_users', JSON.stringify(window.appUsers));
 
-      // Sync ke Firebase
       if (window.db && window.firestoreModule) {
         try {
           const { doc, setDoc } = window.firestoreModule;
@@ -1145,10 +1341,22 @@
         inputHtml = `<option value="dr. Ahmad Sp.PD">dr. Ahmad Sp.PD</option>`;
       }
       inputDPJP.innerHTML = inputHtml;
+
+      const suratDokter = document.getElementById("suratDokterPemeriksa");
+      if(suratDokter) {
+        let sHtml = "";
+        doctors.forEach(d => {
+          sHtml += `<option value="${d.name}">${d.name}</option>`;
+        });
+        if(doctors.length === 0) {
+          sHtml = `<option value="dr. Ahmad Sp.PD">dr. Ahmad Sp.PD</option>`;
+        }
+        suratDokter.innerHTML = sHtml;
+      }
     }
 
     /* -------------------------------------------------------------------
-       DASHBOARD & FILTERS
+       DASHBOARD & PATIENTS RENDER
     ------------------------------------------------------------------- */
     function renderDashboard() {
       const totalOccupied = window.patients.length;
@@ -1223,7 +1431,7 @@
         }
         
         const cardHtml = `
-          <div onclick="openModalDetailPasien('${p.id}')" class="card-glass rounded-2xl p-4 cursor-pointer transition transform hover:-translate-y-1 relative overflow-hidden group">
+          <div class="card-glass rounded-2xl p-4 transition transform hover:-translate-y-1 relative overflow-hidden group">
             
             <div class="flex items-center justify-between border-b border-slate-700/60 pb-2.5 mb-3">
               <span class="px-2.5 py-1 bg-brand-gold text-slate-950 font-black text-xs rounded-lg shadow-sm">
@@ -1234,7 +1442,7 @@
               </span>
             </div>
 
-            <div class="space-y-1.5">
+            <div class="space-y-1.5 cursor-pointer" onclick="openModalDetailPasien('${p.id}')">
               <h4 class="text-base font-extrabold text-white group-hover:text-brand-gold transition line-clamp-1">${p.nama}</h4>
               <p class="text-xs text-slate-300 font-medium">
                 No. RM: <span class="text-brand-gold font-bold">${p.rm}</span> | Umur: ${p.umur} Thn
@@ -1251,6 +1459,12 @@
                   ? `<span class="px-2 py-0.5 bg-red-950 text-red-400 border border-red-800 text-[10px] rounded-full font-bold animate-pulse"><i class="fas fa-tasks mr-1"></i> ${pendingForPatient} Tugas</span>` 
                   : `<span class="text-emerald-400 text-[10px]"><i class="fas fa-check-circle"></i> Selesai</span>`}
               </div>
+            </div>
+
+            <div class="mt-3 pt-2 border-t border-slate-800 flex justify-end">
+              <button onclick="openSuratLepasModal('${p.id}')" class="px-3 py-1 bg-brand-gold/20 hover:bg-brand-gold hover:text-slate-950 border border-brand-gold/50 text-brand-gold rounded-lg text-[10px] font-bold transition flex items-center gap-1">
+                <i class="fas fa-file-medical"></i> Surat Lepas
+              </button>
             </div>
 
             <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-red via-brand-gold to-brand-red opacity-0 group-hover:opacity-100 transition"></div>
@@ -1312,6 +1526,8 @@
     async function simpanPasienBaru(e) {
       e.preventDefault();
       
+      const todayISO = new Date().toISOString().split('T')[0];
+
       const newPatient = {
         id: "p_" + Date.now(),
         kamar: document.getElementById("inputKamar").value,
@@ -1322,6 +1538,7 @@
         dpjp: document.getElementById("inputDPJP").value,
         diagnosa: document.getElementById("inputDiagnosa").value.trim(),
         alamat: document.getElementById("inputAlamat").value.trim(),
+        tglMasuk: todayISO,
         ttv: { td: "-", nadi: "-", suhu: "-", rr: "-", spo2: "-", timestamp: "-" },
         catatan: [],
         images: []
@@ -1570,6 +1787,99 @@
     }
 
     /* -------------------------------------------------------------------
+       FITUR SURAT LEPAS PERAWATAN
+    ------------------------------------------------------------------- */
+    let currentSuratPatientId = null;
+
+    function openSuratLepasModalFromDetail() {
+      if (window.selectedPatientId) {
+        openSuratLepasModal(window.selectedPatientId);
+      }
+    }
+
+    function openSuratLepasModal(patientId) {
+      currentSuratPatientId = patientId;
+      const patient = window.patients.find(p => p.id === patientId);
+      if (!patient) return;
+
+      document.getElementById("suratNama").value = patient.nama;
+      document.getElementById("suratUmur").value = patient.umur;
+      document.getElementById("suratAlamat").value = patient.alamat || "-";
+      document.getElementById("suratDiagnosa").value = patient.diagnosa;
+      
+      const todayISO = new Date().toISOString().split('T')[0];
+      document.getElementById("suratTglMasuk").value = patient.tglMasuk || todayISO;
+      document.getElementById("suratTglKeluar").value = todayISO;
+
+      if (patient.penjamin === "ANGGOTA") {
+        document.getElementById("suratPekerjaan").value = "Polri";
+      } else if (patient.penjamin === "PNS") {
+        document.getElementById("suratPekerjaan").value = "PNS";
+      } else {
+        document.getElementById("suratPekerjaan").value = "Swasta";
+      }
+
+      document.getElementById("suratDokterPemeriksa").value = patient.dpjp;
+      document.getElementById("modalSuratLepas").classList.remove("hidden");
+    }
+
+    function closeSuratLepasModal() {
+      document.getElementById("modalSuratLepas").classList.add("hidden");
+      currentSuratPatientId = null;
+    }
+
+    function formatDateIndo(dateStr) {
+      if(!dateStr) return "-";
+      const parts = dateStr.split('-');
+      if(parts.length !== 3) return dateStr;
+      const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+      const d = parseInt(parts[2]);
+      const m = parseInt(parts[1]) - 1;
+      const y = parts[0];
+      return `${d} ${months[m]} ${y}`;
+    }
+
+    /* FIX TERISOLASI CETAK SURAT LEPAS PERAWATAN */
+    function cetakSuratLepasPerawatan() {
+      const nama = document.getElementById("suratNama").value;
+      const umur = document.getElementById("suratUmur").value;
+      const pekerjaan = document.getElementById("suratPekerjaan").value;
+      const pangkatNrp = document.getElementById("suratPangkatNrp").value.trim() || ".............................................................................";
+      const alamat = document.getElementById("suratAlamat").value.trim() || ".............................................................................";
+      const tglMasuk = formatDateIndo(document.getElementById("suratTglMasuk").value);
+      const tglKeluar = formatDateIndo(document.getElementById("suratTglKeluar").value);
+      const diagnosa = document.getElementById("suratDiagnosa").value;
+      const obatPulang = document.getElementById("suratObatPulang").value.trim() || ".............................................................................";
+      const kontrolHari = document.getElementById("suratKontrolHari").value.trim() || "....................................";
+      const dokter = document.getElementById("suratDokterPemeriksa").value;
+
+      document.getElementById("pSuratNama").innerText = nama;
+      document.getElementById("pSuratUmur").innerText = `${umur} Tahun`;
+      document.getElementById("pSuratPekerjaan").innerText = pekerjaan;
+      document.getElementById("pSuratPangkatNrp").innerText = pangkatNrp;
+      document.getElementById("pSuratAlamat").innerText = alamat;
+      document.getElementById("pSuratTglMasuk").innerText = tglMasuk;
+      document.getElementById("pSuratTglKeluar").innerText = tglKeluar;
+      document.getElementById("pSuratDiagnosa").innerText = diagnosa;
+      document.getElementById("pSuratObatPulang").innerText = obatPulang;
+      document.getElementById("pSuratKontrolHari").innerText = kontrolHari;
+      document.getElementById("pSuratDokterNama").innerText = dokter;
+
+      const now = new Date();
+      const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+      document.getElementById("pSuratTglCetak").innerText = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+
+      // FIX ISOLASI: Aktifkan HANYA Surat Lepas
+      document.getElementById("printAreaHandover").classList.remove("active-print");
+      document.getElementById("printAreaSuratLepas").classList.add("active-print");
+
+      window.print();
+
+      // Reset setelah dialog cetak selesai
+      document.getElementById("printAreaSuratLepas").classList.remove("active-print");
+    }
+
+    /* -------------------------------------------------------------------
        HANDOVER & PRINTING
     ------------------------------------------------------------------- */
     function openHandoverModal() {
@@ -1665,6 +1975,7 @@
       });
     }
 
+    /* FIX TERISOLASI CETAK HANDOVER REPORT */
     function cetakLaporanHandover() {
       const shift = document.getElementById("handoverShift").value;
       const nurse = document.getElementById("handoverNurse").value.trim() || "";
@@ -1718,7 +2029,14 @@
         });
       }
 
+      // FIX ISOLASI: Aktifkan HANYA Laporan Handover
+      document.getElementById("printAreaSuratLepas").classList.remove("active-print");
+      document.getElementById("printAreaHandover").classList.add("active-print");
+
       window.print();
+
+      // Reset setelah dialog cetak selesai
+      document.getElementById("printAreaHandover").classList.remove("active-print");
     }
 
     // Attach Functions to Window Scope
@@ -1748,6 +2066,10 @@
     window.toggleTaskStatus = toggleTaskStatus;
     window.deleteTask = deleteTask;
     window.cetakLaporanHandover = cetakLaporanHandover;
+    window.openSuratLepasModal = openSuratLepasModal;
+    window.openSuratLepasModalFromDetail = openSuratLepasModalFromDetail;
+    window.closeSuratLepasModal = closeSuratLepasModal;
+    window.cetakSuratLepasPerawatan = cetakSuratLepasPerawatan;
   </script>
 </body>
 </html>
